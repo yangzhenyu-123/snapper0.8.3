@@ -1,0 +1,256 @@
+'\" t
+.\"     Title: snapper-configs
+.\"    Author: [see the "AUTHORS" section]
+.\" Generator: DocBook XSL Stylesheets v1.78.1 <http://docbook.sf.net/>
+.\"      Date: 2018-10-29
+.\"    Manual: Filesystem Snapshot Management
+.\"    Source: 0.8.3
+.\"  Language: English
+.\"
+.TH "SNAPPER\-CONFIGS" "5" "2018\-10\-29" "0\&.8\&.3" "Filesystem Snapshot Management"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+snapper-configs \- Configuration files for snapper configs
+.SH "DESCRIPTION"
+.PP
+Each file
+/etc/snapper/configs/*
+describes a snapper config\&.
+.SH "VARIABLES"
+.PP
+The following is a list of variables that can be present in the configuration file\&. Boolean values must be "yes" or "no"\&.
+.PP
+\fBSUBVOLUME=\fR\fB\fIpath\fR\fR
+.RS 4
+Path of the subvolume or mount point\&.
+.sp
+There is no default value\&. The value must always be specified\&.
+.RE
+.PP
+\fBFSTYPE=\fR\fB\fIvalue\fR\fR
+.RS 4
+Filesystem type for the subvolume\&.
+.sp
+Default value is "btrfs" but it\*(Aqs recommended to always specify the filesystem type\&.
+.RE
+.PP
+\fBQGROUP=\fR\fB\fIqgroup\fR\fR
+.RS 4
+The btrfs quota group used for space aware cleanup algorithms\&.
+.sp
+Only supported for btrfs\&.
+.RE
+.PP
+\fBSPACE_LIMIT=\fR\fB\fIfloat\fR\fR
+.RS 4
+Limit for the fraction of the filesystems space the snapshots should use\&.
+.sp
+Only supported for btrfs\&.
+.sp
+Default value is "0\&.5"\&.
+.sp
+New in version 0\&.3\&.0\&.
+.RE
+.PP
+\fBFREE_LIMIT=\fR\fB\fIfloat\fR\fR
+.RS 4
+Limit for the fraction of the filesystem space that should be free\&.
+.sp
+Only supported for btrfs\&.
+.sp
+Default value is "0\&.2"\&.
+.sp
+New in version 0\&.8\&.0\&.
+.RE
+.PP
+\fBALLOW_USERS=\fR\fB\fIusers\fR\fR
+.RS 4
+List of users allowed to operate with the config\&. The user\-names must be separated by spaces\&. Spaces in usernames can be escaped with a "\e"\&.
+.sp
+Also see the PERMISSIONS section in
+\fBsnapper\fR(8)\&.
+.sp
+Default value is "" but "root" is always implicitly included\&.
+.RE
+.PP
+\fBALLOW_GROUPS=\fR\fB\fIgroups\fR\fR
+.RS 4
+List of groups allowed to operate with the config\&. The group\-names must be separated by spaces\&. Spaces in group\-names can be escaped with a "\e"\&.
+.sp
+Also see the PERMISSIONS section in
+\fBsnapper\fR(8)\&.
+.sp
+Default value is ""\&.
+.RE
+.PP
+\fBSYNC_ACL=\fR\fB\fIboolean\fR\fR
+.RS 4
+Defines whether snapper will sync the users and groups from ALLOW_USERS and ALLOW_GROUPS to the ACL of the
+\&.snapshots
+directory\&.
+.sp
+Also see the PERMISSIONS section in
+\fBsnapper\fR(8)\&.
+.sp
+Default value is "no"\&.
+.sp
+New in version 0\&.2\&.0\&.
+.RE
+.PP
+\fBBACKGROUND_COMPARISON=\fR\fB\fIboolean\fR\fR
+.RS 4
+Defines whether pre and post snapshots should be compared in the background after creation\&.
+.sp
+Default value is "yes"\&.
+.RE
+.PP
+\fBNUMBER_CLEANUP=\fR\fB\fIboolean\fR\fR
+.RS 4
+Defines whether the number cleanup algorithm should be run for the config\&.
+.sp
+Default value is "no"\&.
+.RE
+.PP
+\fBNUMBER_MIN_AGE=\fR\fB\fIseconds\fR\fR
+.RS 4
+Minimal age for snapshots to be deleted by the number cleanup algorithm\&.
+.sp
+Default value is "1800"\&.
+.RE
+.PP
+\fBNUMBER_LIMIT=\fR\fB\fInumber\fR\fR\fB or \fR\fB\fIrange\fR\fR
+.RS 4
+Defines how many snapshots the number cleanup algorithm should keep\&. The youngest snapshots will be kept\&.
+.sp
+Default value is "50"\&.
+.RE
+.PP
+\fBNUMBER_LIMIT_IMPORTANT=\fR\fB\fInumber\fR\fR\fB or \fR\fB\fIrange\fR\fR
+.RS 4
+Defines how many important snapshots the number cleanup algorithm should keep\&. Important snapshots have important=yes in the userdata\&. The youngest important snapshots will be kept\&.
+.sp
+The number of normal and important snapshots are counted independently\&.
+.sp
+Default value is "10"\&.
+.sp
+New in version 0\&.1\&.8\&.
+.RE
+.PP
+\fBTIMELINE_CREATE=\fR\fB\fIboolean\fR\fR
+.RS 4
+Defines whether hourly snapshots should be created\&.
+.sp
+Together with the timeline cleanup algorithm this will create a collection of snapshots with more snapshots is the near past and less snapshots in the far past\&.
+.sp
+Default value is "no"\&.
+.RE
+.PP
+\fBTIMELINE_CLEANUP=\fR\fB\fIboolean\fR\fR
+.RS 4
+Defines whether the timeline cleanup algorithm should be run for the config\&.
+.sp
+Default value is "no"\&.
+.RE
+.PP
+\fBTIMELINE_MIN_AGE=\fR\fB\fIseconds\fR\fR
+.RS 4
+Minimal age for snapshots to be deleted by the timeline cleanup algorithm\&.
+.sp
+Default value is "1800"\&.
+.RE
+.PP
+\fBTIMELINE_LIMIT_HOURLY=\fR\fB\fInumber\fR\fR\fB or \fR\fB\fIrange\fR\fR
+.RS 4
+Defines how many hourly snapshots the timeline cleanup algorithm should keep\&. An hourly snapshot is the first snapshot in an hour\&. The youngest hourly snapshots will be kept\&.
+.sp
+Default value is "10"\&.
+.RE
+.PP
+\fBTIMELINE_LIMIT_DAILY=\fR\fB\fInumber\fR\fR\fB or \fR\fB\fIrange\fR\fR
+.RS 4
+Defines how many daily snapshots the timeline cleanup algorithm should keep\&. A daily snapshot is the first snapshot in a day\&. The youngest daily snapshots will be kept\&.
+.sp
+Default value is "10"\&.
+.RE
+.PP
+\fBTIMELINE_LIMIT_WEEKLY=\fR\fB\fInumber\fR\fR\fB or \fR\fB\fIrange\fR\fR
+.RS 4
+Defines how many weekly snapshots the timeline cleanup algorithm should keep\&. A weekly snapshot is the first snapshot in a week\&. The youngest weekly snapshots will be kept\&. In compliance with ISO 8601 weeks start on Monday\&.
+.sp
+Default value is "0"\&.
+.RE
+.PP
+\fBTIMELINE_LIMIT_MONTHLY=\fR\fB\fInumber\fR\fR\fB or \fR\fB\fIrange\fR\fR
+.RS 4
+Defines how many monthly snapshots the timeline cleanup algorithm should keep\&. A monthly snapshot is the first snapshot in a month\&. The youngest monthly snapshots will be kept\&.
+.sp
+Default value is "10"\&.
+.RE
+.PP
+\fBTIMELINE_LIMIT_YEARLY=\fR\fB\fInumber\fR\fR\fB or \fR\fB\fIrange\fR\fR
+.RS 4
+Defines how many yearly snapshots the timeline cleanup algorithm should keep\&. A yearly snapshot is the first snapshot in a year\&. The youngest yearly snapshots will be kept\&.
+.sp
+Default value is "10"\&.
+.RE
+.PP
+\fBEMPTY_PRE_POST_CLEANUP=\fR\fB\fIboolean\fR\fR
+.RS 4
+Defines whether the empty\-pre\-post cleanup algorithm should be run for the config\&.
+.sp
+Default value is "no"\&.
+.RE
+.PP
+\fBEMPTY_PRE_POST_MIN_AGE=\fR\fB\fIseconds\fR\fR
+.RS 4
+Minimal age for snapshots to be deleted by the empty\-pre\-post cleanup algorithm\&.
+.sp
+Default value is "1800"\&.
+.RE
+.SH "TYPES"
+.PP
+Some of the types used for the variables deserve an explanation\&.
+.PP
+range
+.RS 4
+A range of numbers given as
+\fImin\-value\fR\-\fImax\-value\fR, e\&.g\&. "10\-20"\&.
+.RE
+.PP
+qgroup
+.RS 4
+A btrfs qgroup in the standard form
+\fIlevel\fR\-\fIid\fR, e\&.g\&. "1/0"\&.
+.RE
+.SH "NOTES"
+.PP
+The default values stated here are the values snapper uses when the entry is missing in the configuration file\&. Some are not identical to the values from the configuration file template\&.
+.SH "HOMEPAGE"
+.PP
+\m[blue]\fBhttp://snapper\&.io/\fR\m[]
+.SH "AUTHORS"
+.PP
+Arvin Schnell
+<aschnell@suse\&.com>
+.SH "SEE ALSO"
+.PP
+\fBsnapper\fR(8),
+\fBsnapperd\fR(8)

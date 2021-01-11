@@ -1,0 +1,743 @@
+# Jyri Palokangas <jyri.palokangas@opensuse.org>, 2011, 2012, 2013, 2014.
+# Katariina Kemppainen <katariina@opensuse.fi>, 2012.
+# Harri Miettinen <harmie@opensuse.fi>, 2012, 2014, 2015.
+msgid ""
+msgstr ""
+"Project-Id-Version: @PACKAGE@\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-10-29 14:27+0100\n"
+"PO-Revision-Date: 2019-03-01 20:28+0000\n"
+"Last-Translator: Tommi Nieminen <software@legisign.org>\n"
+"Language-Team: Finnish <https://l10n.opensuse.org/projects/snapper/master/fi/"
+">\n"
+"Language: fi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 3.3\n"
+
+msgid "\t--all-configs, -a\t\tList snapshots from all accessible configs."
+msgstr "\t--all-configs, -a\t\tLuettele saatavilla olevien määritysten tilannevedokset."
+
+msgid "\t--cleanup-algorithm, -c <algo>\tCleanup algorithm for snapshot."
+msgstr "\t--cleanup-algorithm, -c <algo>\tTilannevedoksen puhdistusalgoritmi."
+
+msgid "\t--cleanup-algorithm, -c <algo>\tCleanup algorithm for snapshots."
+msgstr "\t--cleanup-algorithm, -c <algo>\tTilannevedoksen puhdistusalgoritmi."
+
+msgid "\t--command <command>\t\tRun command and create pre and post snapshots."
+msgstr ""
+"\t--command <komento>\t\tSuorita komento ja luo ennen- ja jälkeen-"
+"tilannevedokset."
+
+msgid "\t--config, -c <name>\t\tSet name of config to use."
+msgstr "\t--config, -c <nimi>\t\tAseta käytettävän määrityksen nimi."
+
+msgid "\t--description, -d <description>\tDescription for snapshot."
+msgstr "\t--description, -d <kuvaus>\tTilannevedoksen kuvaus."
+
+msgid "\t--description, -d <description>\tDescription for snapshots."
+msgstr "\t--description, -d <kuvaus>\tTilannevedoksen kuvaus."
+
+msgid "\t--diff-cmd <command>\t\tCommand used for comparing files."
+msgstr "\t--diff-cmd <komento>\t\tKomento tiedostojen vertailemiseksi."
+
+msgid "\t--disable-used-space\t\tDisable showing used space."
+msgstr "\t--disable-used-space\t\tÄlä näytä tilankäyttöä."
+
+msgid "\t--extensions, -x <options>\tExtra options passed to the diff command."
+msgstr "\t--extensions, -x <valinnat>\tdiff-komennolle välitettävät lisävalinnat."
+
+msgid "\t--fstype, -f <fstype>\t\tManually set filesystem type."
+msgstr "\t--fstype, -f <tiedostojärjestelmä>\t\tAseta tiedostojärjestelmä käsin."
+
+msgid "\t--input, -i <file>\t\tRead files for which to undo changes from file."
+msgstr "\t--input, -i <tiedosto>\t\tLue tiedostot, joista tehdään peruutusmuutokset tiedostoon."
+
+msgid "\t--input, -i <file>\t\tRead files to diff from file."
+msgstr "\t--input, -i <tiedosto>\t\tLue tiedostot, joita tiedostoon verrataan."
+
+msgid "\t--iso\t\t\t\tDisplay dates and times in ISO format."
+msgstr "\t--iso\t\t\tNäytä päiväys ja aika ISO-muodossa."
+
+msgid "\t--no-dbus\t\t\tOperate without DBus."
+msgstr "\t--no-dbus\t\t\tToimi ilman DBusia."
+
+msgid "\t--output, -o <file>\t\tSave status to file."
+msgstr "\t--output, -o <tiedosto>\t\tTallenna tilatieto tiedostoon."
+
+msgid "\t--pre-number <number>\t\tNumber of corresponding pre snapshot."
+msgstr "\t--pre-number <numero>\t\tVastaavan ennen-tilannevedoksen numero."
+
+msgid "\t--print-number, -p\t\tPrint number of created snapshot."
+msgstr "\t--print-number, -p\t\tTulosta luodun tilannevedoksen numero."
+
+msgid "\t--print-number, -p\t\tPrint number of second created snapshot."
+msgstr "\t--print-number, -p\t\tTulosta luodun tilannevedoksen numero."
+
+msgid "\t--quiet, -q\t\t\tSuppress normal output."
+msgstr "\t--quiet, -q\t\t\tJätä pois tavallinen tuloste."
+
+msgid "\t--root, -r <path>\t\tOperate on target root (works only without DBus)."
+msgstr "\t--root, -r <sijainti>\t\tToimi asetetussa juuressa (toimii vain ilman DBusia)."
+
+msgid "\t--sync, -s\t\t\tSync after deletion."
+msgstr "\t--sync, -s\t\t\tTahdista poistamisen jälkeen."
+
+msgid "\t--table-style, -t <style>\tTable style (integer)."
+msgstr "\t--table-style, -t <tyyli>\tTaulukon tyyli (kokonaisluku)."
+
+msgid "\t--template, -t <name>\t\tName of config template to use."
+msgstr "\t--template, -t <nimi>\t\tKäytettävän määritysmallin nimi."
+
+msgid "\t--type, -t <type>\t\tType for snapshot."
+msgstr "\t--type, -t <tyyppi>\t\tTilannevedoksen tyyppi."
+
+msgid "\t--type, -t <type>\t\tType of snapshots to list."
+msgstr "\t--type, -t <tyyppi>\t\tLueteltavien tilannevedosten tyyppi."
+
+msgid "\t--userdata, -u <userdata>\tUserdata for snapshot."
+msgstr "\t--userdata, -u <käyttäjätieto>\tTilannevedoksen käyttäjätiedot."
+
+msgid "\t--userdata, -u <userdata>\tUserdata for snapshots."
+msgstr "\t--userdata, -u <käyttäjätieto>\tTilannevedosten käyttäjätiedot."
+
+msgid "\t--utc\t\t\t\tDisplay dates and times in UTC."
+msgstr "\t--utc\t\t\t\tNäytä UTC-päiväys ja -aika."
+
+msgid "\t--verbose, -v\t\t\tIncrease verbosity."
+msgstr "\t--verbose, -v\t\t\tLisää tulostettavia tietoja."
+
+msgid "\t--version\t\t\tPrint version and exit."
+msgstr "\t--version\t\t\tTulosta versio ja lopeta."
+
+msgid "\tsnapper cleanup <cleanup-algorithm>"
+msgstr "\tsnapper puhdistus <puhdistus-algoritmi>"
+
+msgid "\tsnapper create"
+msgstr "\tsnapper create"
+
+msgid "\tsnapper create-config <subvolume>"
+msgstr "\tsnapper create-config <alitaltio>"
+
+msgid "\tsnapper delete <number>"
+msgstr "\tsnapper delete <numero>"
+
+msgid "\tsnapper delete-config"
+msgstr "\tsnapper delete-config"
+
+msgid "\tsnapper diff <number1>..<number2> [files]"
+msgstr "\tsnapper diff <numero1>..<numero2> [tiedostot]"
+
+msgid "\tsnapper get-config"
+msgstr "\tsnapper get-config"
+
+msgid "\tsnapper list"
+msgstr "\tsnapper list"
+
+msgid "\tsnapper list-configs"
+msgstr "\tsnapper list-configs"
+
+msgid "\tsnapper modify <number>"
+msgstr "\tsnapper modify <numero>"
+
+msgid "\tsnapper mount <number>"
+msgstr "\tsnapper mount <numero>"
+
+msgid "\tsnapper rollback [number]"
+msgstr "\tsnapper rollback [numero]"
+
+msgid "\tsnapper set-config <configdata>"
+msgstr "\tsnapper set-config <määritystieto>"
+
+msgid "\tsnapper setup-quota"
+msgstr "\tsnapper setup-quota"
+
+msgid "\tsnapper status <number1>..<number2>"
+msgstr "\tsnapper status <numero1>..<numero2>"
+
+msgid "\tsnapper umount <number>"
+msgstr "\tsnapper umount <numero>"
+
+msgid "\tsnapper undochange <number1>..<number2> [files]"
+msgstr "\tsnapper undochange <numero1>..<numero2> [tiedostot]"
+
+msgid "\tsnapper xadiff <number1>..<number2> [files]"
+msgstr "\tsnapper xadiff <numero1>..<numero2> [tiedostot]"
+
+msgid "    Global options:"
+msgstr "    Yleisvalitsimet:"
+
+msgid "    Options for 'create' command:"
+msgstr "    ”create”-komennon valitsimet:"
+
+msgid "    Options for 'create-config' command:"
+msgstr "    ”create-config”-komennon valitsimet:"
+
+msgid "    Options for 'delete' command:"
+msgstr "    ”delete”-komennon valitsimet:"
+
+msgid "    Options for 'diff' command:"
+msgstr "    ”diff”-komennon valitsimet:"
+
+msgid "    Options for 'list' command:"
+msgstr "    ”list”-komennon valitsimet:"
+
+msgid "    Options for 'modify' command:"
+msgstr "    ”modify”-komennon valitsimet:"
+
+msgid "    Options for 'rollback' command:"
+msgstr "    ”rollback”-komennon valitsimet:"
+
+msgid "    Options for 'status' command:"
+msgstr "    ”status”-komennon valitsimet:"
+
+msgid "    Options for 'undochange' command:"
+msgstr "    ”undochange”-komennon valitsimet:"
+
+msgid "  Cleanup snapshots:"
+msgstr "  Puhdista tilannevedokset:"
+
+msgid "  Comparing snapshots extended attributes:"
+msgstr "  Verrataan tilannevedosten lisämääritteitä:"
+
+msgid "  Comparing snapshots:"
+msgstr "  Verrataan tilannevedoksia:"
+
+msgid "  Create config:"
+msgstr "  Luo määritys:"
+
+msgid "  Create snapshot:"
+msgstr "  Luo tilannevedos:"
+
+msgid "  Delete config:"
+msgstr "  Poista määritys:"
+
+msgid "  Delete snapshot:"
+msgstr "  Poista tilannevedos:"
+
+msgid "  Get config:"
+msgstr "  Nouda määritys:"
+
+msgid "  List configs:"
+msgstr "  Luettele määritykset:"
+
+msgid "  List snapshots:"
+msgstr "  Luettele tilannevedokset:"
+
+msgid "  Modify snapshot:"
+msgstr "  Muokkaa tilannevedosta:"
+
+msgid "  Mount snapshot:"
+msgstr "  Liitä tilannevedos:"
+
+msgid "  Rollback:"
+msgstr "  Palaa:"
+
+msgid "  Set config:"
+msgstr "  Aseta määritys:"
+
+msgid "  Setup quota:"
+msgstr "  Aseta tilarajoitus:"
+
+msgid "  Umount snapshot:"
+msgstr "  Irrota tilannevedos:"
+
+msgid "  Undo changes:"
+msgstr "  Peru muutokset:"
+
+msgid "#"
+msgstr "#"
+
+#, c-format
+msgid "(Snapshot %d.)"
+msgstr "(Tilannevedos %d.)"
+
+# error box title
+msgid "ACL error."
+msgstr "ACL-virhe."
+
+#. TRANSLATORS: symbol for "bytes" (best keep untranslated)
+msgid "B"
+msgstr "B"
+
+#, c-format
+msgid "Cannot delete snapshot %d since it is the current system."
+msgstr ""
+"Tilannevedosta %d ei voi poistaa, koska se tarkoittaa nykyistä järjestelmää."
+
+#, c-format
+msgid "Cannot delete snapshot %d since it is the currently mounted snapshot."
+msgstr ""
+"Tilannevedosta %d ei voi poistaa, koska se on tällä hetkellä liitettynä "
+"oleva tilannevedos."
+
+#, c-format
+msgid "Cannot delete snapshot %d since it is the next to be mounted snapshot."
+msgstr ""
+"Tilannevedosta %d ei voi poistaa, koska se on seuraavaksi liitettävä "
+"tilannevedos."
+
+msgid "Cleanup"
+msgstr "Puhdistus"
+
+msgid "Command 'cleanup' needs one arguments."
+msgstr "\"cleanup\"-komento vaatii yhden parametrin."
+
+msgid "Command 'create' does not take arguments."
+msgstr "”create”-komento ei hyväksy parametreja."
+
+msgid "Command 'create-config' needs one argument."
+msgstr "”create-config”-komento vaatii yhden parametrin."
+
+msgid "Command 'debug' does not take arguments."
+msgstr "”debug”-komento ei hyväksy parametreja."
+
+msgid "Command 'delete' needs at least one argument."
+msgstr "”delete”-komento vaatii vähintään yhden parametrin."
+
+msgid "Command 'delete-config' does not take arguments."
+msgstr "”delete-config”-komento ei hyväksy parametreja."
+
+msgid "Command 'diff' needs at least one argument."
+msgstr "”diff”-komento vaatii vähintään yhden parametrin."
+
+msgid "Command 'get-config' does not take arguments."
+msgstr "”get-config”-komento ei hyväksy parametreja."
+
+msgid "Command 'help' does not take arguments."
+msgstr "”help”-komento ei hyväksy parametreja."
+
+msgid "Command 'list' does not take arguments."
+msgstr "”list”-komento ei hyväksy parametreja."
+
+msgid "Command 'list-configs' does not take arguments."
+msgstr "”list-configs”-komento ei hyväksy parametreja."
+
+msgid "Command 'modify' needs at least one argument."
+msgstr "”modify”-komento vaatii vähintään yhden parametrin."
+
+msgid "Command 'mount' needs at least one argument."
+msgstr "”mount”-komento vaatii vähintään yhden parametrin."
+
+#, c-format
+msgid "Command 'rollback' cannot be used on a non-root subvolume %s."
+msgstr "”rollback”-komentoa ei voi käyttää ei-juurialitaltioon %s."
+
+msgid "Command 'rollback' only available for btrfs."
+msgstr "”rollback”-komentoa voi käyttää vain btrfs:ssä."
+
+msgid "Command 'rollback' takes either one or no argument."
+msgstr "”rollback”-komento ottaa joko yhden parametrin tai ei parametreja."
+
+msgid "Command 'set-config' needs at least one argument."
+msgstr "”set-config”-komento vaatii vähintään yhden parametrin."
+
+msgid "Command 'setup-quota' does not take arguments."
+msgstr "”setup-quota”-komento ei hyväksy parametreja."
+
+msgid "Command 'status' needs one argument."
+msgstr "”status”-komento vaatii yhden parametrin."
+
+msgid "Command 'umount' needs at least one argument."
+msgstr "”umount”-komento vaatii vähintään yhden parametrin."
+
+msgid "Command 'undochange' needs at least one argument."
+msgstr "”undochange”-komento vaatii vähintään yhden parametrin."
+
+msgid "Command 'xadiff' needs at least one argument."
+msgstr "”xadiff”-komento vaatii vähintään yhden parametrin."
+
+msgid "Config"
+msgstr "Määritys"
+
+#, c-format
+msgid "Config '%s' is invalid."
+msgstr "Määritys \"%s\" on virheellinen."
+
+#, c-format
+msgid "Config '%s' not found."
+msgstr "Määritystä ”%s” ei löytynyt."
+
+msgid "Config is in use."
+msgstr "Määritys on käytössä."
+
+msgid "Config is locked."
+msgstr "Määritys on lukittu."
+
+#, c-format
+msgid "Configdata '%s' does not include '=' sign."
+msgstr "Määritystiedosta ”%s” puuttuu ”=”-merkki."
+
+#, c-format
+msgid "Configdata '%s' has empty key."
+msgstr "Määritystiedossa ”%s” on tyhjä avain."
+
+#, c-format
+msgid "Creating config failed (%s)."
+msgstr "Määrityksen luominen epäonnistui (%s)."
+
+msgid "Creating read-only snapshot of current system."
+msgstr "Luodaan järjestelmästä vain luettavaa tilannevedosta."
+
+msgid "Creating read-only snapshot of default subvolume."
+msgstr "Luodaan oletusalitaltiosta vain luettavaa tilannevedosta."
+
+msgid "Creating read-write snapshot of current subvolume."
+msgstr "Luodaan nykyisestä alitaltiosta kirjoitettavissa olevaa tilannevedosta."
+
+#, c-format
+msgid "Creating read-write snapshot of snapshot %d."
+msgstr "Luodaan tilannevedoksesta %d kirjoitettavissa olevaa tilannevedosta."
+
+msgid "Creating snapshot failed."
+msgstr "Tilannevedoksen luominen epäonnistui."
+
+msgid "Date"
+msgstr "Päiväys"
+
+#, c-format
+msgid "Deleting config failed (%s)."
+msgstr "Määrityksen poistaminen epäonnistui (%s)."
+
+msgid "Deleting snapshot failed."
+msgstr "Tilannevedoksen poistaminen epäonnistui."
+
+#, c-format
+msgid "Deleting snapshot from %s:"
+msgid_plural "Deleting snapshots from %s:"
+msgstr[0] "Poistetaan tilannevedosta taltiosta %s:"
+msgstr[1] "Poistetaan tilannevedoksia taltiosta %s:"
+
+msgid "Description"
+msgstr "Kuvaus"
+
+msgid "Detecting filesystem type failed."
+msgstr "Tiedostojärjestelmän tyypin tunnistaminen epäonnistui."
+
+#. TRANSLATORS: symbol for "exbi bytes" (best keep untranslated)
+msgid "EiB"
+msgstr "EiB"
+
+msgid "Empty configdata."
+msgstr "Tyhjä määritystieto."
+
+msgid "Empty userdata."
+msgstr "Tyhjä käyttäjätieto."
+
+# error box title
+#, c-format
+msgid "Error (%s)."
+msgstr "Virhe (%s)."
+
+msgid "Failed to initialize filesystem handler."
+msgstr "Tiedostojärjestelmäkäsittelyn alustus epäonnistui."
+
+msgid "Failed to set locale. Fix your system."
+msgstr "Maa-asetuksen asettaminen epäonnistui. Korjaa järjestelmä."
+
+msgid "Failure"
+msgstr "Epäonnistui"
+
+#, c-format
+msgid "Failure (%s)."
+msgstr "Epäonnistui (%s)."
+
+#, c-format
+msgid "File '%s' not found."
+msgstr "Tiedostoa \"%s\" ei löytynyt."
+
+# error box title
+#, c-format
+msgid "Free space error (%s)."
+msgstr "Vapaan tilan virhe (%s)."
+
+#. TRANSLATORS: symbol for "gibi bytes" (best keep untranslated)
+msgid "GiB"
+msgstr "GiB"
+
+# error box title
+#, c-format
+msgid "IO Error (%s)."
+msgstr "I/O-virhe (%s)."
+
+# error box title
+#, c-format
+msgid "IO error (%s)."
+msgstr "I/O-virhe (%s)."
+
+msgid "Identical snapshots."
+msgstr "Identtinen tilannevedos."
+
+msgid "Illegal snapshot."
+msgstr "Virheellinen tilannevedos."
+
+msgid "Invalid configdata."
+msgstr "Virheellinen määritystieto."
+
+msgid "Invalid group."
+msgstr "Virheellinen ryhmä."
+
+#, c-format
+msgid "Invalid snapshot '%s'."
+msgstr "Virheellinen tilannevedos \"%s\"."
+
+msgid "Invalid snapshots."
+msgstr "Virheellisiä tilannevedoksia."
+
+msgid "Invalid subvolume."
+msgstr "Virheellinen alitaltio."
+
+#, c-format
+msgid "Invalid table style %d."
+msgstr "Virheellinen taulukon tyyli %d."
+
+msgid "Invalid user."
+msgstr "Virheellinen käyttäjä."
+
+msgid "Invalid userdata."
+msgstr "Virheellinen käyttäjätieto."
+
+msgid "Key"
+msgstr "Avain"
+
+#. TRANSLATORS: symbol for "kibi bytes" (best keep untranslated)
+msgid "KiB"
+msgstr "KiB"
+
+#, c-format
+msgid "Listing configs failed (%s)."
+msgstr "Määritysten luetteleminen epäonnistui (%s)."
+
+msgid "Maybe you forgot the delimiter '..' between the snapshot numbers."
+msgstr "Unohdit ehkä tilannevedosnumeroiden välistä erottimen ”..”."
+
+#. TRANSLATORS: symbol for "mebi bytes" (best keep untranslated)
+msgid "MiB"
+msgstr "MiB"
+
+#, c-format
+msgid "Missing argument for command option '%s'."
+msgstr "Komennon valitsimelta ”%s” puuttuu parametri."
+
+#, c-format
+msgid "Missing argument for global option '%s'."
+msgstr "Yleisvalitsimelta ”%s” puuttuu parametri."
+
+msgid "Missing command argument."
+msgstr "Komennolta puuttuu parametri."
+
+msgid "Missing delimiter '..' between snapshot numbers."
+msgstr "Tilannevedosnumeroiden välistä puuttuu erotin ”..”."
+
+msgid "Missing or invalid pre-number."
+msgstr "Puuttuva tai virheellinen ennen-numero."
+
+msgid "No command provided."
+msgstr "Komentoa ei annettu."
+
+msgid "No permissions."
+msgstr "Ei käyttöoikeuksia."
+
+#, c-format
+msgid "Opening file '%s' failed."
+msgstr "Tiedoston \"%s\" avaaminen epäonnistui."
+
+#. TRANSLATORS: symbol for "pebi bytes" (best keep untranslated)
+msgid "PiB"
+msgstr "PiB"
+
+msgid "Post #"
+msgstr "Jälkeen-#"
+
+msgid "Post Date"
+msgstr "Jälkeen-päiväys"
+
+msgid "Pre #"
+msgstr "Ennen-#"
+
+msgid "Pre Date"
+msgstr "Ennen-päiväys"
+
+# error box title
+#, c-format
+msgid "Quota error (%s)."
+msgstr "Tilarajoitusvirhe (%s)."
+
+msgid "See 'man snapper' for further instructions."
+msgstr "Lisää ohjeita: ”man snapper”."
+
+#, c-format
+msgid "Setting default subvolume to snapshot %d."
+msgstr "Asetetaan oletusalitaltio tilannevedokselle %d."
+
+#, c-format
+msgid "Snapshot '%u' not found."
+msgstr "Tilannevedosta \"%u\" ei löytynyt."
+
+msgid "Snapshot is in use."
+msgstr "Tilannevedos on käytössä."
+
+msgid "Subvolume"
+msgstr "Alitaltio"
+
+msgid "The config 'root' does not exist. Likely snapper is not configured."
+msgstr "\"root\"-määritys puuttuu. Luultavasti snapperia ei ole määritetty."
+
+#. TRANSLATORS: symbol for "tebi bytes" (best keep untranslated)
+msgid "TiB"
+msgstr "TiB"
+
+msgid "Try 'snapper --help' for more information."
+msgstr "Kokeile ”snapper --help” saadaksesi lisätietoa."
+
+msgid "Type"
+msgstr "Tyyppi"
+
+#, c-format
+msgid "Unknown cleanup algorithm '%s'."
+msgstr "Tuntematon puhdistusalgoritmi \"%s\"."
+
+#, c-format
+msgid "Unknown command '%s'."
+msgstr "Tuntematon komento \"%s\"."
+
+msgid "Unknown config."
+msgstr "Tuntematon määritys."
+
+#, c-format
+msgid "Unknown global option '%s'."
+msgstr "Tuntematon yleisvalitsin \"%s\"."
+
+#, c-format
+msgid "Unknown option '%s' for command '%s'."
+msgstr "Tuntematon valitsin \"%s\" komennolle \"%s\"."
+
+msgid "Unknown type of snapshot."
+msgstr "Tuntematon tilannevedostyyppi."
+
+msgid "Unknown type of snapshots."
+msgstr "Tuntematon tilannevedosten tyyppi."
+
+#, c-format
+msgid "Use an integer number from %d to %d."
+msgstr "Käytä kokonaislukua väliltä %d–%d."
+
+msgid "Used Space"
+msgstr "Käytetty tila"
+
+msgid "User"
+msgstr "Käyttäjä"
+
+msgid "Userdata"
+msgstr "Käyttäjätieto"
+
+#, c-format
+msgid "Userdata '%s' does not include '=' sign."
+msgstr "Käyttäjätieto '%s' ei sisällä '=' merkkiä."
+
+#, c-format
+msgid "Userdata '%s' has empty key."
+msgstr "Käyttäjätiedossa '%s' on tyhjä avain."
+
+msgid "Value"
+msgstr "Arvo"
+
+#, c-format
+msgid "create:%d modify:%d delete:%d"
+msgstr "luo:%d muokkaa:%d poista:%d"
+
+#, c-format
+msgid "creating %s"
+msgstr "luodaan %s"
+
+#, c-format
+msgid "deleting %s"
+msgstr "poistetaan %s"
+
+#, c-format
+msgid "failed to create %s"
+msgstr "%s luominen epäonnistui"
+
+#, c-format
+msgid "failed to delete %s"
+msgstr "%s poistaminen epäonnistui"
+
+#, c-format
+msgid "failed to modify %s"
+msgstr "muokkaus epäonnistui: %s"
+
+#, c-format
+msgid "modifying %s"
+msgstr "muokataan: %s"
+
+msgid "nothing to do"
+msgstr "ei mitään tehtävää"
+
+msgid "root argument can be used only together with no-dbus."
+msgstr "Juuriparametria voi käyttää vain no-dbus-asetuksen kanssa."
+
+msgid "usage: snapper [--global-options] <command> [--command-options] [command-arguments]"
+msgstr ""
+"käyttö: snapper [--yleisvalitsimet] <komento> [--komennon-valitsimet] "
+"[komennon-parametrit]"
+
+#, fuzzy
+#~ msgid "Quota failure (%s)."
+#~ msgstr "Epäonnistui (%s)."
+
+#~ msgid "Command '%s' does not work without DBus."
+#~ msgstr "Komento '%s' ei toimi ilman DBus:ia."
+
+# error box title
+#~ msgid "IO Error."
+#~ msgstr "I/O-virhe"
+
+#~ msgid "Unknown file."
+#~ msgstr "Tuntematon tiedosto."
+
+#~ msgid "Command failed (%s). See log for more information."
+#~ msgstr "Komento epäonnistui (%s). Katso lokista lisätietoja."
+
+#~ msgid "comparing snapshots..."
+#~ msgstr "verrataan tilannevedoksia..."
+
+#~ msgid "done"
+#~ msgstr "valmis"
+
+#~ msgid "undoing change done"
+#~ msgstr "muutoksen palautus tehty"
+
+#~ msgid "undoing change..."
+#~ msgstr "palautetaan muutosta..."
+
+#, fuzzy
+#~| msgid "add needs one argument"
+#~ msgid "Command 'modify' needs one argument."
+#~ msgstr "add vaatii yhden argumentin"
+
+#, fuzzy
+#~| msgid "add needs one argument"
+#~ msgid "Command 'diff' needs one argument."
+#~ msgstr "add vaatii yhden argumentin"
+
+#, fuzzy
+#~| msgid "File '%s' not found on medium '%s'"
+#~ msgid "File '%s' not found in diff."
+#~ msgstr "Tiedostoa '%s' ei löydy tietovälineeltä '%s'"
+
+#, fuzzy
+#~| msgid "Rollback Support: "
+#~ msgid "  Rollback snapshots:"
+#~ msgstr "Palautustuki: "
+
+#, fuzzy
+#~| msgid "diff needs two arguments"
+#~ msgid "Command 'diff' needs two arguments."
+#~ msgstr "diff vaatii kaksi argumenttia"
+
+#, fuzzy
+#~| msgid "Rollback"
+#~ msgid "rollback done"
+#~ msgstr "Palaa takaisin"

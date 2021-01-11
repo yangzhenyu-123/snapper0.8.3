@@ -1,0 +1,716 @@
+'\" t
+.\"     Title: snapper
+.\"    Author: [see the "AUTHORS" section]
+.\" Generator: DocBook XSL Stylesheets v1.78.1 <http://docbook.sf.net/>
+.\"      Date: 2018-10-29
+.\"    Manual: Filesystem Snapshot Management
+.\"    Source: 0.8.3
+.\"  Language: English
+.\"
+.TH "SNAPPER" "8" "2018\-10\-29" "0\&.8\&.3" "Filesystem Snapshot Management"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+snapper \- Command\-line program for filesystem snapshot management
+.SH "SYNOPSIS"
+.HP \w'\fBsnapper\fR\ 'u
+\fBsnapper\fR [\fI\-\-global\-opts\fR] \fIcommand\fR [\fI\-\-command\-opts\fR] [\fIcommand\-arguments\fR]
+.HP \w'\fBsnapper\fR\ 'u
+\fBsnapper\fR {\-\-help}
+.SH "DESCRIPTION"
+.PP
+Snapper is a command\-line program for filesystem snapshot management\&. It can create, delete and compare snapshots and undo changes done between snapshots\&.
+.PP
+Snapper never modifies the content of snapshots\&. Thus snapper creates read\-only snapshots if supported by the kernel\&. Supported filesystems are btrfs and ext4 as well as snapshots of LVM logical volumes with thin\-provisioning\&. Some filesystems might not be supported depending on your installation\&.
+.SH "CONCEPTS"
+.SS "Configurations"
+.PP
+For each filesystem or subvolume that should be snapshotted by snapper, a configuration file is required, see
+\fBsnapper-configs\fR(5)\&. The setup can be done with the create\-config command\&.
+.SS "Snapshots"
+.PP
+Snapper distinguishes three types of snapshots\&.
+.PP
+pre
+.RS 4
+Pre snapshots should always have a corresponding post snapshot\&. The intention of pre/post snapshot pairs is to snapshot the filesystem before and after a modification\&.
+.RE
+.PP
+post
+.RS 4
+See pre type\&.
+.RE
+.PP
+single
+.RS 4
+These snapshots have no special relationship to other snapshots\&.
+.RE
+.PP
+Note that filesystem\-wise all three types are the same\&.
+.SS "Snapshot Description and Userdata"
+.PP
+With each snapshot a description and some userdata can be associated\&. The description is a string\&. The userdata is a list of key\-value pairs where the keys and values are strings\&.
+.PP
+Do not use non\-ASCII characters for the snapshot description, userdata or any other strings, unless you always use the UTF\-8 character encoding\&.
+.SS "Automatic Snapshot Creation"
+.PP
+Next to manual snapshot creation, snapshots are also created automatically\&.
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+A cron\-job creates hourly snapshots\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+Certain programs like YaST and zypper create pre/post snapshot pairs when modifying the system\&.
+.RE
+.SS "Cleanup Algorithms"
+.PP
+Snapper provides several algorithms to clean up old snapshots\&. The algorithms are executed in a daily cron\-job\&. This can be configured in the corresponding configurations files along with parameters for every algorithm\&.
+.PP
+number
+.RS 4
+Deletes old snapshots when a certain number of snapshots is reached\&.
+.RE
+.PP
+timeline
+.RS 4
+Deletes old snapshots but keeps a number of hourly, daily, weekly, monthly and yearly snapshots\&.
+.RE
+.PP
+empty\-pre\-post
+.RS 4
+Deletes pre/post snapshot pairs with empty diffs\&.
+.RE
+.PP
+The number and timeline cleanup algorithms can also try to keep the space used by snapshots below a limit and the free space of the filesystem above a limit\&. For the first condition quota must be setup, see command setup\-quota\&. Additional the NUMBER_LIMIT and TIMELINE_LIMIT variables in the config file must have ranges (min\- and max\-value)\&. The algorithms will then make two passes:
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 1.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  1." 4.2
+.\}
+Delete snapshots above the max\-value independent of the snapshot and filesystem space\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 2.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  2." 4.2
+.\}
+Delete snapshots above the min\-value until the limits for the snapshot and filesystem are reached\&.
+.RE
+.sp
+The limit for the used space can be configured via the SPACE_LIMIT variable\&. Note: Only snapshots that have a cleanup algorithm set are taken into account when calculating the space used by snapshots\&. The limit for the free space can be configured via the FREE_LIMIT variable\&.
+.SS "Filters"
+.PP
+Some files keep state information of the system, e\&.g\&.
+/etc/mtab\&. Such files should never be reverted\&. To help users, snapper allows one to ignore these files\&.
+.PP
+Each line in all files
+/etc/snapper/filters/*\&.txt
+specifies a pattern\&. When snapper computes the difference between two snapshots it ignores all files and directories matching any of those patterns by using
+\fBfnmatch\fR(3)
+with the flag FNM_LEADING_DIR\&.
+.PP
+Note that filters do not exclude files or directories from being snapshotted\&. For that, use subvolumes or mount points\&.
+.SH "GLOBAL OPTIONS"
+.PP
+\fB\-q, \-\-quiet\fR
+.RS 4
+Suppress normal output\&. Error messages will still be printed, though\&.
+.RE
+.PP
+\fB\-v, \-\-verbose\fR
+.RS 4
+Increase verbosity\&.
+.RE
+.PP
+\fB\-\-utc\fR
+.RS 4
+Display dates and times in UTC\&.
+.RE
+.PP
+\fB\-\-iso\fR
+.RS 4
+Display dates and times in ISO format\&.
+.RE
+.PP
+\fB\-t, \-\-table\-style\fR
+.RS 4
+Specifies table style\&. Table style is identified by an integer number\&.
+.RE
+.PP
+\fB\-c, \-\-config \fR\fB\fIname\fR\fR
+.RS 4
+Use specified configuration instead of the default configuration\&. The default configuration is named "root"\&.
+.RE
+.PP
+\fB\-\-no\-dbus\fR
+.RS 4
+Operate without a DBus connection\&.
+.sp
+Use with caution since a running snapperd will not know about modifications made to the system\&.
+.RE
+.PP
+\fB\-r, \-\-root \fR\fB\fIpath\fR\fR
+.RS 4
+Operate on target root\&. Only works together with no\-dbus and only for some commands\&.
+.RE
+.PP
+\fB\-\-version\fR
+.RS 4
+Print version and exit\&.
+.RE
+.SH "COMMANDS"
+.PP
+Snapper provides a number of
+\fIcommands\fR\&. Each command accepts the options listed in the
+GLOBAL OPTIONS
+section\&. These options must be specified
+\fIbefore\fR
+the command name\&. In addition, many commands have specific options, which are listed in this section\&. These command\-specific options must be specified
+\fIafter\fR
+the name of the command and
+\fIbefore\fR
+any of the command arguments\&.
+.PP
+\fBhelp\fR
+.RS 4
+Show short help text\&.
+.RE
+.PP
+\fBlist\-configs\fR
+.RS 4
+List available configurations\&.
+.RE
+.PP
+\fBcreate\-config [options] \fR\fB\fIsubvolume\fR\fR
+.RS 4
+Create a new configuration for a filesystem or subvolume\&. For this command you will likely need the global option
+\fB\-\-config\fR, see
+GLOBAL OPTIONS
+and
+CONCEPTS.
+.PP
+\fB\-f, \-\-fstype\fR \fIfstype\fR
+.RS 4
+Manually set filesystem type\&. Supported values are btrfs, ext4 and lvm\&. For lvm, snapper uses LVM thin\-provisioned snapshots\&. The filesystem type on top of LVM must be provided in parentheses, e\&.g\&. lvm(xfs)\&.
+.sp
+Without this option snapper tries to detect the filesystem\&.
+.RE
+.PP
+\fB\-t, \-\-template\fR \fIname\fR
+.RS 4
+Name of template for the new configuration file\&.
+.RE
+.RE
+.PP
+\fBdelete\-config\fR
+.RS 4
+Delete a configuration for a filesystem or subvolume\&. For this command you will likely need to global option
+\fB\-\-config\fR, see
+GLOBAL OPTIONS
+and
+CONCEPTS.
+.RE
+.PP
+\fBget\-config\fR
+.RS 4
+Displays the settings of the configuration\&.
+.RE
+.PP
+\fBset\-config\fR \fIconfigdata\fR
+.RS 4
+Changes the settings of the configuration\&. The settings
+\fIconfigdata\fR
+are a list of key\-value\-pairs separated by spaces and the key and value must be separated by an equal sign, e\&.g\&. "NUMBER_CLEANUP=yes NUMBER_LIMIT=10"\&. The value of SUBVOLUME and FSTYPE cannot be changed\&.
+.RE
+.PP
+\fBlist (ls) [options]\fR
+.RS 4
+List snapshots\&.
+.PP
+\fB\-t, \-\-type\fR \fItype\fR
+.RS 4
+Selects type of snapshots to list\&. Possible values are all, single and pre\-post\&.
+.RE
+.PP
+\fB\-\-disable\-used\-space\fR
+.RS 4
+Disable display of used space\&.
+.sp
+Calculating the used space needs some time\&. Thus this option can speedup the listing\&.
+.RE
+.PP
+\fB\-a, \-\-all\-configs\fR
+.RS 4
+List snapshots from all configs accessible by the user\&.
+.RE
+.sp
+For each snapshot the output consists of several columns\&. Some need explanation:
+.PP
+#, Pre # and Post #
+.RS 4
+The number of the snapshot\&.
+.sp
+For btrfs the number can be followed by a sign\&. A "\-" indicates that the snapshot is the currently mounted snapshot and a "+" indicates that the snapshot will be mounted next time (It is the btrfs default subvolume)\&. If both conditions apply a "*" is displayed\&.
+.RE
+.PP
+Used Space
+.RS 4
+For btrfs the exclusive space of the btrfs quota group corresponding to the snapshot\&.
+.sp
+Display of used space is automatically disabled if not available, e\&.g\&. quota not enabled on btrfs\&.
+.RE
+.RE
+.PP
+\fBcreate [options]\fR
+.RS 4
+Create a new snapshot\&.
+.PP
+\fB\-t, \-\-type\fR \fItype\fR
+.RS 4
+Specifies the type of the new snapshot\&. Possible values are single, pre and post\&.
+.RE
+.PP
+\fB\-\-pre\-number\fR \fInumber\fR
+.RS 4
+For post snapshots the number of the pre snapshot must be provided\&.
+.RE
+.PP
+\fB\-p, \-\-print\-number\fR
+.RS 4
+Print number of the created snapshot\&.
+.RE
+.PP
+\fB\-d, \-\-description\fR \fIdescription\fR
+.RS 4
+Description for the snapshot\&.
+.RE
+.PP
+\fB\-c, \-\-cleanup\-algorithm\fR \fIcleanup\-algorithm\fR
+.RS 4
+Set the cleanup algorithm for the snapshot\&.
+.RE
+.PP
+\fB\-u, \-\-userdata\fR \fIuserdata\fR
+.RS 4
+Set userdata for the snapshot\&. The key\-value pairs must be separated by comma and the key and value must be separated by an equal sign, e\&.g\&. requestid=42,user=arthur\&.
+.RE
+.PP
+\fB\-\-command\fR \fIcommand\fR
+.RS 4
+Create a pre and post snapshot and run command in between\&.
+.RE
+.RE
+.PP
+\fBmodify [options] \fR\fB\fInumber\fR\fR
+.RS 4
+Modify a snapshot\&.
+.PP
+\fB\-d, \-\-description\fR \fIdescription\fR
+.RS 4
+New description for snapshot\&.
+.RE
+.PP
+\fB\-c, \-\-cleanup\-algorithm\fR \fIcleanup\-algorithm\fR
+.RS 4
+Set the cleanup algorithm for the snapshot\&.
+.RE
+.PP
+\fB\-u, \-\-userdata\fR \fIuserdata\fR
+.RS 4
+Set userdata for the snapshot\&. The key\-value pairs must be separated by comma and the key and value must be separated by an equal sign, e\&.g\&. requestid=42,user=arthur\&.
+.RE
+.RE
+.PP
+\fBdelete (remove|rm) \fR\fB\fInumber\fR\fR\fB | \fR\fB\fInumber1\-number2\fR\fR
+.RS 4
+Delete a snapshot or a range of snapshots\&.
+.PP
+\fB\-s, \-\-sync\fR
+.RS 4
+Sync the filesystem after deleting the snapshots\&. The details depend on the filesystem type\&.
+.sp
+Btrfs normally asynchronously frees space after deleting snapshots\&. With this option snapper will wait until the space once used by the deleted snapshots is actually available again\&.
+.RE
+.sp
+Snapshot 0 cannot be deleted\&. For btrfs the currently mounted snapshot and the snapshot that will be mounted next time (the btrfs default subvolume) can also not be deleted\&.
+.RE
+.PP
+\fBmount \fR\fB\fInumber\fR\fR
+.RS 4
+Mount a snapshot\&. Not required for all filesystem types\&.
+.RE
+.PP
+\fBumount \fR\fB\fInumber\fR\fR
+.RS 4
+Unmount a snapshot\&. Not required for all filesystem types\&.
+.RE
+.PP
+\fBstatus [options] \fR\fB\fInumber1\fR\fR\fB\&.\&.\fR\fB\fInumber2\fR\fR
+.RS 4
+Compare the snapshots
+\fInumber1\fR
+and
+\fInumber2\fR\&. This will show a list of files and directories that have been created, modified or deleted in the time between the two snapshots have been made\&.
+.PP
+\fB\-o, \-\-output\fR \fIfile\fR
+.RS 4
+Write output to file
+\fIfile\fR\&.
+.RE
+.sp
+The output consists of a string encoding the status followed by the filename\&. The characters of the status string are:
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 1.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  1." 4.2
+.\}
+A "+" means the file was created, a "\-" means the file was deleted\&. A "c" means the content of the file has changed and a "t" means the type of the file has changed (e\&.g\&. from regular file to directory)\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 2.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  2." 4.2
+.\}
+A "p" means the permissions are have changed\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 3.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  3." 4.2
+.\}
+An "u" means the user ownership has changed\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 4.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  4." 4.2
+.\}
+A "g" means the group ownership has changed\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 5.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  5." 4.2
+.\}
+A "x" means the extended attribute information has changed\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 6.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  6." 4.2
+.\}
+An "a" means the ACL information has changed\&.
+.RE
+.sp
+If there is no change a "\&." is outputted\&.
+.RE
+.PP
+\fBdiff [options] \fR\fB\fInumber1\fR\fR\fB\&.\&.\fR\fB\fInumber2\fR\fR\fB [files]\fR
+.RS 4
+Compare the snapshots
+\fInumber1\fR
+and
+\fInumber2\fR\&. This will show a diff of the content of files and directories that have been created, modified or deleted in the time between the two snapshots have been made\&.
+.PP
+\fB\-i, \-\-input\fR \fIfile\fR
+.RS 4
+Read files to diff from file
+\fIfile\fR\&.
+.RE
+.PP
+\fB\-\-diff\-cmd\fR \fIcommand\fR
+.RS 4
+Command used for comparing files\&. The default is
+/usr/bin/diff \-\-new\-file \-\-unified\&. The two files to compare are passed as parameters to the command\&.
+.RE
+.PP
+\fB\-x, \-\-extensions\fR \fIoptions\fR
+.RS 4
+Extra options passed to the diff command\&.
+.RE
+.RE
+.PP
+\fBundochange [options] \fR\fB\fInumber1\fR\fR\fB\&.\&.\fR\fB\fInumber2\fR\fR\fB [files]\fR
+.RS 4
+Undo changes done between snapshot
+\fInumber1\fR
+and
+\fInumber2\fR\&.
+.PP
+\fB\-i, \-\-input\fR \fIfile\fR
+.RS 4
+Read files for which to undo changes from file
+\fIfile\fR\&.
+.RE
+.RE
+.PP
+\fBrollback [options] [\fR\fB\fInumber\fR\fR\fB]\fR
+.RS 4
+Creates two new snapshots and sets the default subvolume\&. Per default the system boots from the default subvolume of the root filesystem\&. The exact actions depend on whether a number is provided or not:
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+Without a number, a first read\-only snapshot of the default subvolume is created\&. A second read\-write snapshot of the current system is created\&. The system is set to boot from the second snapshot\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+With a number, a first read\-only snapshot of the current system is created\&. A second read\-write snapshot is created of
+\fInumber\fR\&. The system is set to boot from the second snapshot\&.
+.RE
+.sp
+Rollback is only supported with btrfs and requires a properly configured system\&.
+.PP
+\fB\-p, \-\-print\-number\fR
+.RS 4
+Print number of the second created snapshot\&.
+.RE
+.PP
+\fB\-d, \-\-description\fR \fIdescription\fR
+.RS 4
+Description for the snapshot\&.
+.RE
+.PP
+\fB\-c, \-\-cleanup\-algorithm\fR \fIcleanup\-algorithm\fR
+.RS 4
+Set the cleanup algorithm for the snapshot\&.
+.RE
+.PP
+\fB\-u, \-\-userdata\fR \fIuserdata\fR
+.RS 4
+Set userdata for the snapshot\&. The key\-value pairs must be separated by comma and the key and value must be separated by an equal sign, e\&.g\&. requestid=42,user=arthur\&.
+.RE
+.sp
+The rollback command also sets the description, the cleanup algorithm and some userdata unless the values are specified on the command line\&. This will automate cleanup of snapshots created by rollbacks\&.
+.RE
+.PP
+\fBsetup\-quota\fR
+.RS 4
+Sets up quota\&. Currently only supported with btrfs\&.
+.RE
+.PP
+\fBcleanup \fR\fB\fIcleanup\-algorithm\fR\fR
+.RS 4
+Run the cleanup algorithm
+\fIcleanup\-algorithm\fR\&. Currently implemented cleanup algorithms are number, timeline and empty\-pre\-post\&.
+.RE
+.PP
+\fBxadiff \fR\fB\fInumber1\fR\fR\fB\&.\&.\fR\fB\fInumber2\fR\fR\fB [files]\fR
+.RS 4
+Compare the extended attributes between snapshot
+\fInumber1\fR
+and
+\fInumber2\fR\&. See examples below:
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
++:user\&.foo
+for created attributes
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\-:user\&.bar
+for removed attributes
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+\-+:security\&.selinux
+for modified attributes
+.RE
+.RE
+.SH "PERMISSIONS"
+.PP
+Non\-root users can be allowed to use a configuration by setting ALLOW_USERS or ALLOW_GROUPS in the config file\&. For all operations to work, the user must also be able to read and access the
+\&.snapshots
+directory inside the subvolume\&. The
+\&.snapshots
+directory must be owned by root and must not be writable by anybody else\&.
+.PP
+Here are some methods how to achieve that:
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+Make the directory accessible for everyone:
+.sp
+\fBchmod a+rx \&.snapshots\fR
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+Make the directory accessible for a group the user belongs to, e\&.g\&.:
+.sp
+\fBchown :users \&.snapshots\fR
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+Make the directory accessible for the user using ACLs, e\&.g\&.:
+.sp
+\fBsetfacl \-m u:tux:rx \&.snapshots\fR
+.RE
+.PP
+The last method can be performed by snapper, see the SYNC_ACL setting in
+\fBsnapper-configs\fR(5)\&.
+.SH "FILES"
+.PP
+/etc/sysconfig/snapper
+.RS 4
+Global configuration file\&.
+.RE
+.PP
+/etc/snapper/configs
+.RS 4
+Directory containing configuration files\&.
+.RE
+.PP
+/etc/snapper/config\-templates
+.RS 4
+Directory containing configuration templates\&.
+.RE
+.PP
+/etc/snapper/filters/*\&.txt
+.RS 4
+Filter files\&.
+.RE
+.PP
+/var/log/snapper\&.log
+.RS 4
+Logfile\&. Please include this file in bug reports\&.
+.RE
+.SH "NOTES"
+.PP
+There is no mechanism to ensure consistency of the files while a snapshot it made\&. E\&.g\&. the files of a database can be inconsistent while the database is running\&.
+.PP
+Consistency after undochange is not guaranteed\&. E\&.g\&. when the creation of a user is undone, there might still exist files from that user\&.
+.PP
+Support for individual filesystems, rollback and extended attributes are compile\-time options and may not be available\&.
+.SH "HOMEPAGE"
+.PP
+\m[blue]\fBhttp://snapper\&.io/\fR\m[]
+.SH "AUTHORS"
+.PP
+Arvin Schnell
+<aschnell@suse\&.com>
+.SH "SEE ALSO"
+.PP
+\fBsnapper-configs\fR(5),
+\fBsnapper-zypp-plugin\fR(8),
+\fBpam_snapper\fR(8),
+\fBbtrfs\fR(8),
+\fBlvm\fR(8),
+\fBattr\fR(5),
+\fBacl\fR(5)
