@@ -60,8 +60,7 @@ namespace snapper
     SDir::SDir(const string& base_path)
 	: base_path(base_path), path()
     {
-	y2err("now it is in snapper/" << __FILE__ << "  ||  now func is: SDir::" << __FUNCTION__
-	 <<  "(base_path=" << base_path << ")" << " ||  open base_path");
+	y2err("now it is in snapper/" << __FILE__ << "  ||  now func is: SDir::" << __FUNCTION__<<  "(base_path=" << base_path << ")" << " ||  open base_path");
 		
 	dirfd = ::open(base_path.c_str(), O_RDONLY  | O_NOATIME  | O_CLOEXEC);
 	if (dirfd < 0)
@@ -83,8 +82,7 @@ namespace snapper
     SDir::SDir(const SDir& dir, const string& name)
 	: base_path(dir.base_path), path(dir.path + "/" + name)
     {
-		y2err("now it is in snapper/" << __FILE__ << "  ||  now func is:" << __FUNCTION__ 
-		<<  "(base_path=" << dir.base_path << ", path=" << dir.path << "/"<< name << ")" << " ||  openat path+name");
+	y2err("now it is in snapper/" << __FILE__ << "  ||  now func is:" << __FUNCTION__ <<  "(base_path=" << dir.base_path << ", path=" << dir.path << "/"<< name << ")" << " ||  openat path+name");
 	assert(name.find('/') == string::npos);
 	assert(name != "..");
 
@@ -114,8 +112,7 @@ namespace snapper
     SDir::SDir(const SDir& dir)
 	: base_path(dir.base_path), path(dir.path)
     {
-		y2err("now it is in snapper/" << __FILE__ << "  ||  now func is:" << __FUNCTION__ 
-		<<  "(dir.base_path=" << dir.base_path << ", path=" << dir.path << ")" << " ||  fcntl dir");
+	y2err("now it is in snapper/" << __FILE__ << "  ||  now func is:" << __FUNCTION__ <<  "(dir.base_path=" << dir.base_path << ", path=" << dir.path << ")" << " ||  fcntl dir");
 	dirfd = fcntl(dir.dirfd, F_DUPFD_CLOEXEC, 0);
 	if (dirfd == -1)
 	    SN_THROW(IOErrorException(sformat("fcntl(F_DUPFD_CLOEXEC) failed error:%d (%s)", errno,
@@ -128,7 +125,7 @@ namespace snapper
     SDir&
     SDir::operator=(const SDir& dir)
     {
-		y2err("now it is in snapper/" << __FILE__ << "  ||  now func is:" << __FUNCTION__ <<  "(dir.fd=" << dir.dirfd << ", xastatus=" << dir.xastatus << ")");
+		//y2err("now it is in snapper/" << __FILE__ << "  ||  now func is:" << __FUNCTION__ <<  "(dir.fd=" << dir.dirfd << ", xastatus=" << dir.xastatus << ")");
 	if (this != &dir)
 	{
 	    ::close(dirfd);
@@ -153,7 +150,7 @@ namespace snapper
     SDir
     SDir::deepopen(const SDir& dir, const string& name)
     {
-		y2err("now it is in snapper/" << __FILE__ << "  ||  now func is:" << __FUNCTION__ <<  "(dir=" << dir.path <<", name=" << name << ")");
+		//y2err("now it is in snapper/" << __FILE__ << "  ||  now func is:" << __FUNCTION__ <<  "(dir=" << dir.path <<", name=" << name << ")");
 	string::size_type pos = name.find('/');
 	if (pos == string::npos)
 	    return SDir(dir, name);
@@ -186,7 +183,7 @@ namespace snapper
     vector<string>
     SDir::entries() const
     {
-		y2err("now it is in snapper/" << __FILE__ << "  ||  now func is:" << __FUNCTION__ << "()" );
+		//y2err("now it is in snapper/" << __FILE__ << "  ||  now func is:" << __FUNCTION__ << "()" );
 	return entries(all_entries);
     }
 
@@ -241,7 +238,7 @@ namespace snapper
 		pred(ep->d_type, ep->d_name))
 		ret.push_back(ep->d_name);
 	}
-	//y2err("now it is in snapper/" << __FILE__ << "  ||  now func is:" << __FUNCTION__ << "(dp=" << ep->d_name << ")" );
+	////y2err("now it is in snapper/" << __FILE__ << "  ||  now func is:" << __FUNCTION__ << "(dp=" << ep->d_name << ")" );
 	free(ep);
 
 #endif
@@ -297,7 +294,7 @@ namespace snapper
     {
 	assert(name.find('/') == string::npos);
 	assert(name != "..");
-
+	cout << "当前在" << __FILE__ << "  FUNC " << __FUNCTION__ <<"调用fstatat()获取文件" <<name << "状态" << endl; 
 	return ::fstatat(dirfd, name.c_str(), buf, flags);
     }
 
@@ -349,7 +346,7 @@ namespace snapper
     int
     SDir::unlink(const string& name, int flags) const
     {
-	y2err("now it is in snapper/" << __FILE__ << "  ||  now func is:" << __FUNCTION__ << "(" << name << ", " << "flag=" << flags << ")");
+	//y2err("now it is in snapper/" << __FILE__ << "  ||  now func is:" << __FUNCTION__ << "(" << name << ", " << "flag=" << flags << ")");
 	assert(name.find('/') == string::npos);
 	assert(name != "..");
 
@@ -456,7 +453,7 @@ namespace snapper
     ssize_t
     SDir::listxattr(const string& path, char* list, size_t size) const
     {
-	y2err("now it is in snapper/" << __FILE__ << "  ||  now func is:" << __FUNCTION__ << "(" << path << ", list=" << list << ", size=" << size << ")");
+	//y2err("now it is in snapper/" << __FILE__ << "  ||  now func is:" << __FUNCTION__ << "(" << path << ", list=" << list << ", size=" << size << ")");
 	assert(path.find('/') == string::npos);
 	assert(path != "..");
 
@@ -493,7 +490,7 @@ namespace snapper
     ssize_t
     SDir::getxattr(const string& path, const char* name, void* value, size_t size) const
     {
-		y2err("now it is in snapper/" << __FILE__ << "  ||  now func is:" << __FUNCTION__ << "(" << path << ", " << name << "," << value << "size=" << size << ")");
+		//y2err("now it is in snapper/" << __FILE__ << "  ||  now func is:" << __FUNCTION__ << "(" << path << ", " << name << "," << value << "size=" << size << ")");
 	assert(path.find('/') == string::npos);
 	assert(path != "..");
 
@@ -552,7 +549,7 @@ namespace snapper
 	    xastatus = XA_SUPPORTED;
 	}
 #endif
-y2err("now it is in snapper/" << __FILE__ << "  ||  now func is:" << __FUNCTION__ << "(xastatus=" << xastatus << ")" );
+//y2err("now it is in snapper/" << __FILE__ << "  ||  now func is:" << __FUNCTION__ << "(xastatus=" << xastatus << ")" );
     }
 
 
@@ -560,7 +557,7 @@ y2err("now it is in snapper/" << __FILE__ << "  ||  now func is:" << __FUNCTION_
     SDir::mount(const string& device, const string& mount_type, unsigned long mount_flags,
 		const string& mount_data) const
     {
-		y2err("now it is in snapper/" << __FILE__ << "  ||  now func is:" << __FUNCTION__ << "(" << device << ", " << mount_type << ", " << mount_flags << ", " << mount_data << ")");
+		//y2err("now it is in snapper/" << __FILE__ << "  ||  now func is:" << __FUNCTION__ << "(" << device << ", " << mount_type << ", " << mount_flags << ", " << mount_data << ")");
 	boost::lock_guard<boost::mutex> lock(cwd_mutex);
 
 	int r1 = fchdir(dirfd);
@@ -586,7 +583,7 @@ y2err("now it is in snapper/" << __FILE__ << "  ||  now func is:" << __FUNCTION_
     bool
     SDir::umount(const string& mount_point) const
     {
-		y2err("now it is in snapper/" << __FILE__ << "  ||  now func is:" << __FUNCTION__ << "(" << mount_point << ")");
+		//y2err("now it is in snapper/" << __FILE__ << "  ||  now func is:" << __FUNCTION__ << "(" << mount_point << ")");
 	boost::lock_guard<boost::mutex> lock(cwd_mutex);
 
 	int r1 = fchdir(dirfd);
@@ -781,7 +778,7 @@ y2err("now it is in snapper/" << __FILE__ << "  ||  now func is:" << __FUNCTION_
     SFile::SFile(const SDir& dir, const string& name)
 	: dir(dir), name(name)
     {
-	y2err("now it is in snapper/" << __FILE__ << "  ||  now func is:" << __FUNCTION__ << "(dir, " << name << ")");
+	//y2err("now it is in snapper/" << __FILE__ << "  ||  now func is:" << __FUNCTION__ << "(dir, " << name << ")");
 	assert(name.find('/') == string::npos);
 	assert(name != "..");
     }
@@ -790,7 +787,7 @@ y2err("now it is in snapper/" << __FILE__ << "  ||  now func is:" << __FUNCTION_
     string
     SFile::fullname(bool with_base_path) const
     {
-		y2err("now it is in snapper/" << __FILE__ << "  ||  now func is:" << __FUNCTION__ << "(" << with_base_path << ")");
+		//y2err("now it is in snapper/" << __FILE__ << "  ||  now func is:" << __FUNCTION__ << "(" << with_base_path << ")");
 	return dir.fullname(name, with_base_path);
     }
 
@@ -798,7 +795,7 @@ y2err("now it is in snapper/" << __FILE__ << "  ||  now func is:" << __FUNCTION_
     int
     SFile::stat(struct stat* buf, int flags) const
     {
-		y2err("now it is in snapper/" << __FILE__ << "  ||  now func is:" << __FUNCTION__ << "(struct stat* buf, int flags)");
+		//y2err("now it is in snapper/" << __FILE__ << "  ||  now func is:" << __FUNCTION__ << "(struct stat* buf, int flags)");
 	return dir.stat(name, buf, flags);
     }
 
@@ -813,7 +810,7 @@ y2err("now it is in snapper/" << __FILE__ << "  ||  now func is:" << __FUNCTION_
     ssize_t
     SFile::readlink(string& buf) const
     {
-		y2err("now it is in snapper/" << __FILE__ << "  ||  now func is:" << __FUNCTION__ << "(buf=)" << buf << ")");
+		//y2err("now it is in snapper/" << __FILE__ << "  ||  now func is:" << __FUNCTION__ << "(buf=)" << buf << ")");
 	return dir.readlink(name, buf);
     }
 
@@ -828,7 +825,7 @@ y2err("now it is in snapper/" << __FILE__ << "  ||  now func is:" << __FUNCTION_
     bool
     SFile::xaSupported() const
     {
-		y2err("now it is in snapper/" << __FILE__ << "  ||  now func is:" << __FUNCTION__ << "()");
+		//y2err("now it is in snapper/" << __FILE__ << "  ||  now func is:" << __FUNCTION__ << "()");
 	return dir.xaSupported();
     }
 
@@ -836,7 +833,7 @@ y2err("now it is in snapper/" << __FILE__ << "  ||  now func is:" << __FUNCTION_
     ssize_t
     SFile::listxattr(char* list, size_t size) const
     {
-		y2err("now it is in snapper/" << __FILE__ << "  ||  now func is:" << __FUNCTION__ << "(list=)" << list << ", size)");
+		////y2err("now it is in snapper/" << __FILE__ << "  ||  now func is:" << __FUNCTION__ << "(list=)" << list << ", size)");
 	return dir.listxattr(name, list, size);
     }
 
@@ -844,7 +841,7 @@ y2err("now it is in snapper/" << __FILE__ << "  ||  now func is:" << __FUNCTION_
     ssize_t
     SFile::getxattr(const char* name, void* value, size_t size) const
     {
-		y2err("now it is in snapper/" << __FILE__ << "  ||  now func is:" << __FUNCTION__ << "(name=)" << name << "，value=" << value << ", size)");
+		//y2err("now it is in snapper/" << __FILE__ << "  ||  now func is:" << __FUNCTION__ << "(name=)" << name << "，value=" << value << ", size)");
 	return dir.getxattr(SFile::name, name, value, size);
     }
 

@@ -156,8 +156,7 @@ ProxySnapperLib::deleteSnapshots(vector<ProxySnapshots::iterator> snapshots, boo
 ProxyComparison
 ProxySnapperLib::createComparison(const ProxySnapshot& lhs, const ProxySnapshot& rhs, bool mount)
 {
-     y2err("now it is in  client/" << __FILE__ << "|| func name:" << __FUNCTION__ 
-     << "(lhs=" << lhs.getNum() << ", rhs=" << rhs.getNum() << ", " << mount << ") （返回值ProxyComparisonLib）");
+     y2err("now it is in  client/" << __FILE__ << "|| func name:" << __FUNCTION__ << "(lhs=" << lhs.getNum() << ", rhs=" << rhs.getNum() << ", " << mount << ") （返回值ProxyComparisonLib）");
     return ProxyComparison(new ProxyComparisonLib(this, lhs, rhs, mount));
 }
 

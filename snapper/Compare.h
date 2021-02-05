@@ -25,9 +25,8 @@
 
 
 #include <string>
-#include <vector>
 #include <functional>
-
+#include <vector>
 #include "snapper/FileUtils.h"
 
 

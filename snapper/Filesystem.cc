@@ -57,7 +57,7 @@ namespace snapper
     vector<string>
     Filesystem::filter_mount_options(const vector<string>& options)
     {
-    y2err("now it is in snapper/" << __FILE__ << " || now func is:" << __FUNCTION__ << "(" << options.size() << ")");
+    y2err(" snapper/" << __FILE__ << " || func:" << __FUNCTION__ << "(" << options.size() << ")");
 	static const char* ign_opt[] = {
 	    "ro", "rw",
 	    "exec", "noexec", "suid", "nosuid", "dev", "nodev",
@@ -78,7 +78,7 @@ namespace snapper
     Filesystem::mount(const string& device, const SDir& dir, const string& mount_type,
 		      const vector<string>& options)
     {
-    y2err("now it is in snapper/" << __FILE__ << " || now func is:" << __FUNCTION__ << "("  << dir.fullname() << ")");
+    y2err(" snapper/" << __FILE__ << " || func:" << __FUNCTION__ << "("  << dir.fullname() << ")");
 	unsigned long mount_flags = MS_RDONLY | MS_NOEXEC | MS_NOSUID | MS_NODEV |
 	    MS_NOATIME | MS_NODIRATIME;
 
@@ -89,7 +89,7 @@ namespace snapper
     bool
     Filesystem::umount(const SDir& dir, const string& mount_point)
     {
-        y2err("now it is in snapper/" << __FILE__ << " || now func is:" << __FUNCTION__ << "(" << dir.fullname() << ")");
+        y2err(" snapper/" << __FILE__ << " || func:" << __FUNCTION__ << "(" << dir.fullname() << ")");
 	return dir.umount(mount_point);
     }
 
@@ -97,7 +97,7 @@ namespace snapper
     Filesystem*
     Filesystem::create(const string& fstype, const string& subvolume, const string& root_prefix)
     {
-    y2err("now it is in snapper/" << __FILE__ << " || now func is:" << __FUNCTION__ << "(fstype=" << fstype << ", " << subvolume << ", " << root_prefix << ")");
+    y2err(" snapper/" << __FILE__ << " || func:" << __FUNCTION__ << "(fstype=" << fstype << ", " << subvolume << ", " << root_prefix << ")");
 	typedef Filesystem* (*func_t)(const string& fstype, const string& subvolume,
 				      const string& root_prefix);
 
@@ -130,14 +130,14 @@ namespace snapper
     Filesystem*
     Filesystem::create(const ConfigInfo& config_info, const string& root_prefix)
     {
-    y2err("now it is in snapper/" << __FILE__ << " || now func is:" << __FUNCTION__ << "(config_info=" << config_info.getConfigName() << ") （开始）");
+    y2err(" snapper/" << __FILE__ << " || func:" << __FUNCTION__ << "(config_info=" << config_info.getConfigName() << ") （开始）");
 	string fstype = "btrfs";
 	config_info.getValue(KEY_FSTYPE, fstype);
 
 	Filesystem* fs = create(fstype, config_info.getSubvolume(), root_prefix);
 
 	fs->evalConfigInfo(config_info);
- y2err("now it is in snapper/" << __FILE__ << " || now func is:" << __FUNCTION__ << "(config_info=" << config_info.getConfigName() << ") （结束）");
+ y2err(" snapper/" << __FILE__ << " || func:" << __FUNCTION__ << "(config_info=" << config_info.getConfigName() << ") （结束）");
 	return fs;
     }
 
@@ -147,7 +147,7 @@ namespace snapper
     {
     
 	SDir subvolume_dir(prepend_root_prefix(root_prefix, subvolume));
-    y2err("now it is in snapper/" << __FILE__ << " || now func is:" << __FUNCTION__ << "(" << subvolume_dir.fullname() << ")");
+    y2err(" snapper/" << __FILE__ << " || func:" << __FUNCTION__ << "(" << subvolume_dir.fullname() << ")");
 	return subvolume_dir;
     }
 
@@ -157,7 +157,7 @@ namespace snapper
     {
 	SDir infos_dir = openInfosDir();
 	SDir info_dir(infos_dir, decString(num));
-    y2err("now it is in snapper/" << __FILE__ << " || now func is:" << __FUNCTION__ << "(num=" << num <<", " << info_dir.fullname() << ")");
+    y2err(" snapper/" << __FILE__ << " || func:" << __FUNCTION__ << "(num=" << num <<", " << info_dir.fullname() << ")");
 	return info_dir;
     }
 
@@ -165,8 +165,7 @@ namespace snapper
     void
     Filesystem::cmpDirs(const SDir& dir1, const SDir& dir2, cmpdirs_cb_t cb) const
     {
-        y2err("now it is in snapper/" << __FILE__ << " || now func is: Filesystem::" << __FUNCTION__ << "(dir1:" << dir1.fullname() <<
-         ", dir2:" << dir2.fullname() << ", cb)");
+    y2err(" snapper/" << __FILE__ << " || func: Filesystem::" << __FUNCTION__ << "(dir1:" << dir1.fullname() << ", dir2:" << dir2.fullname() << ", cb)");
 	snapper::cmpDirs(dir1, dir2, cb);
     }
 
@@ -189,7 +188,7 @@ namespace snapper
     std::pair<bool, unsigned int>
     Filesystem::getDefault() const
     {
-        y2err("now it is in snapper/" << __FILE__ << "  ||  now func is:" << __FUNCTION__ << "()" );
+        y2err(" snapper/" << __FILE__ << "  ||  func:" << __FUNCTION__ << "()" );
 	return std::make_pair(false, 0);
     }
 
@@ -205,7 +204,7 @@ namespace snapper
     std::pair<bool, unsigned int>
     Filesystem::getActive() const
     {
-    y2err("now it is in client/" << __FILE__  << " ||| func name is:" << __FUNCTION__ << "()");
+    y2err(" client/" << __FILE__  << " ||| func name is:" << __FUNCTION__ << "()");
 	return std::make_pair(false, 0);
     }
 
@@ -213,7 +212,7 @@ namespace snapper
     bool
     Filesystem::isActive(unsigned int num) const
     {
-         y2err("now it is in client/" << __FILE__  << " ||| func name is:" << __FUNCTION__ << "(num=" << num << ")");
+         y2err(" client/" << __FILE__  << " ||| func name is:" << __FUNCTION__ << "(num=" << num << ")");
 	return false;
     }
 

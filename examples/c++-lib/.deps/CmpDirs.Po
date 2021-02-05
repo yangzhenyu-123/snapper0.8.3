@@ -99,17 +99,18 @@ CmpDirs.o: CmpDirs.cc /usr/include/stdc-predef.h /usr/include/stdlib.h \
  /usr/include/c++/4.9/bits/basic_ios.tcc \
  /usr/include/c++/4.9/bits/ostream.tcc /usr/include/c++/4.9/istream \
  /usr/include/c++/4.9/bits/istream.tcc ../../snapper/Compare.h \
- /usr/include/c++/4.9/vector /usr/include/c++/4.9/bits/stl_construct.h \
+ /usr/include/c++/4.9/functional /usr/include/c++/4.9/typeinfo \
+ /usr/include/c++/4.9/tuple /usr/include/c++/4.9/utility \
+ /usr/include/c++/4.9/bits/stl_relops.h /usr/include/c++/4.9/array \
+ /usr/include/c++/4.9/stdexcept \
+ /usr/include/c++/4.9/bits/uses_allocator.h /usr/include/c++/4.9/vector \
+ /usr/include/c++/4.9/bits/stl_construct.h \
  /usr/include/c++/4.9/ext/alloc_traits.h \
  /usr/include/c++/4.9/bits/alloc_traits.h \
  /usr/include/c++/4.9/bits/stl_uninitialized.h \
  /usr/include/c++/4.9/bits/stl_vector.h \
  /usr/include/c++/4.9/bits/stl_bvector.h \
- /usr/include/c++/4.9/bits/vector.tcc /usr/include/c++/4.9/functional \
- /usr/include/c++/4.9/typeinfo /usr/include/c++/4.9/tuple \
- /usr/include/c++/4.9/utility /usr/include/c++/4.9/bits/stl_relops.h \
- /usr/include/c++/4.9/array /usr/include/c++/4.9/stdexcept \
- /usr/include/c++/4.9/bits/uses_allocator.h ../../snapper/FileUtils.h \
+ /usr/include/c++/4.9/bits/vector.tcc ../../snapper/FileUtils.h \
  /usr/include/boost/thread.hpp /usr/include/boost/thread/thread.hpp \
  /usr/include/boost/thread/thread_only.hpp \
  /usr/include/boost/thread/detail/platform.hpp \
@@ -909,22 +910,6 @@ CmpDirs.o: CmpDirs.cc /usr/include/stdc-predef.h /usr/include/stdlib.h \
 
 ../../snapper/Compare.h:
 
-/usr/include/c++/4.9/vector:
-
-/usr/include/c++/4.9/bits/stl_construct.h:
-
-/usr/include/c++/4.9/ext/alloc_traits.h:
-
-/usr/include/c++/4.9/bits/alloc_traits.h:
-
-/usr/include/c++/4.9/bits/stl_uninitialized.h:
-
-/usr/include/c++/4.9/bits/stl_vector.h:
-
-/usr/include/c++/4.9/bits/stl_bvector.h:
-
-/usr/include/c++/4.9/bits/vector.tcc:
-
 /usr/include/c++/4.9/functional:
 
 /usr/include/c++/4.9/typeinfo:
@@ -940,6 +925,22 @@ CmpDirs.o: CmpDirs.cc /usr/include/stdc-predef.h /usr/include/stdlib.h \
 /usr/include/c++/4.9/stdexcept:
 
 /usr/include/c++/4.9/bits/uses_allocator.h:
+
+/usr/include/c++/4.9/vector:
+
+/usr/include/c++/4.9/bits/stl_construct.h:
+
+/usr/include/c++/4.9/ext/alloc_traits.h:
+
+/usr/include/c++/4.9/bits/alloc_traits.h:
+
+/usr/include/c++/4.9/bits/stl_uninitialized.h:
+
+/usr/include/c++/4.9/bits/stl_vector.h:
+
+/usr/include/c++/4.9/bits/stl_bvector.h:
+
+/usr/include/c++/4.9/bits/vector.tcc:
 
 ../../snapper/FileUtils.h:
 

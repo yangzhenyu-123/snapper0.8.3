@@ -132,7 +132,6 @@ namespace snapper
     void
     Comparison::do_mount() const
     {
-		y2err("");
 		 y2err("now it is in  snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "(snapshot1 iscurrent=" << getSnapshot1()->isCurrent() << ", snapshot2 iscurrent=" << getSnapshot2()->isCurrent() << ")");
 	
 	if (!getSnapshot1()->isCurrent())
@@ -165,23 +164,23 @@ namespace snapper
 	cmpdirs_cb_t cb = [this](const string& name, unsigned int status) {
 	    files.push_back(File(&file_paths, name, status));
 	};
-	y2err("调用do_mount函数");
+	y2err("create调用do_mount函数");
 	do_mount();
-	y2err("调用do_mount函数结束");
+	y2err("create调用do_mount函数结束");
 	{
-		y2err("调用openSnapshotDir函数 dir1");
+		y2err("create调用openSnapshotDir函数 dir1");
 	    SDir dir1 = getSnapshot1()->openSnapshotDir();
-		y2err("调用openSnapshotDir函数结束 dir1");
-		y2err("调用openSnapshotDir函数 dir2");
+		y2err("create调用openSnapshotDir函数结束 dir1");
+		y2err("create调用openSnapshotDir函数 dir2");
 	    SDir dir2 = getSnapshot2()->openSnapshotDir();
-		y2err("调用openSnapshotDir函数结束 dir2");
-		y2err("调用cmpDirs函数");
+		y2err("create调用openSnapshotDir函数结束 dir2");
+		y2err("==================create调用cmpDirs函数====================");
 	    snapper->getFilesystem()->cmpDirs(dir1, dir2, cb);
-		y2err("调用cmpDirs函数结束");
+		y2err("========================create调用cmpDirs函数结束================");
 	}
-	y2err("调用do_umount函数");
+	y2err("create调用do_umount函数");
 	do_umount();
-	y2err("调用do_umount函数结束");
+	y2err("create调用do_umount函数结束");
 	files.sort();
 
 	y2mil("found " << files.size() << " lines");
