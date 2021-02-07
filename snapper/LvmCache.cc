@@ -70,7 +70,7 @@ namespace snapper
     void
     LogicalVolume::activate()
     {
-		y2err("now it is in  snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "()");
+		y2err("snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "()");
 	/*
 	 * FIXME: There is bug in LVM causing lvs and lvchange commands
 	 *	 may fail in certain situations.
@@ -133,7 +133,7 @@ namespace snapper
 
 		attrs.active = false;
 	    }
-		y2err("now it is in  snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "(active=" << attrs.active << ")");
+		y2err("snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "(active=" << attrs.active << ")");
 	    y2deb("lvm cache: " << vg->get_vg_name() << "/" << lv_name << " deactivated");
 	}
     }
@@ -150,7 +150,7 @@ namespace snapper
 	    y2err("lvm cache: failed to get info about " << vg->get_vg_name() << "/" << lv_name);
 	    throw LvmCacheException();
 	}
-	y2err("now it is in  snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "(" << lv_name << ")");
+	y2err("snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "(" << lv_name << ")");
 	vector<string> args;
 	const string tmp = boost::trim_copy(cmd.stdout().front());
 	boost::split(args, tmp, boost::is_any_of(" \t\n"), boost::token_compress_on);
@@ -185,7 +185,7 @@ namespace snapper
 	    if (cit->first == add_lv_name || cit->first.find("-snapshot") != string::npos)
 		{
 			lv_info_map.insert(make_pair(cit->first, new LogicalVolume(this, cit->first, LvAttrs(cit->second))));
-			y2err("now it is in  snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "(input.first="<< cit->first << ", " << vg_name << ", " << add_lv_name << ")");
+			y2err("snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "(input.first="<< cit->first << ", " << vg_name << ", " << add_lv_name << ")");
 		}
     }
 
@@ -200,7 +200,7 @@ namespace snapper
     void
     VolumeGroup::activate(const string& lv_name)
     {
-	y2err("now it is in  snapper/" << __FILE__ << "|| func name:" << __FUNCTION__  << "("<< lv_name << ")");
+	y2err("snapper/" << __FILE__ << "|| func name:" << __FUNCTION__  << "("<< lv_name << ")");
 	boost::shared_lock<boost::shared_mutex> shared_lock(vg_mutex);
 
 	iterator it = lv_info_map.find(lv_name);
@@ -217,7 +217,7 @@ namespace snapper
     void
     VolumeGroup::deactivate(const string& lv_name)
     {
-		y2err("now it is in  snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "(" << lv_name << ")" );
+		y2err("snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "(" << lv_name << ")" );
 	boost::shared_lock<boost::shared_mutex> shared_lock(vg_mutex);
 
 	iterator it = lv_info_map.find(lv_name);
@@ -234,7 +234,7 @@ namespace snapper
     bool
     VolumeGroup::contains(const std::string& lv_name) const
     {
-		y2err("now it is in  snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "(" << lv_name << ")");
+		y2err("snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "(" << lv_name << ")");
 	boost::shared_lock<boost::shared_mutex> shared_lock(vg_mutex);
 
 	return lv_info_map.find(lv_name) != lv_info_map.end();
@@ -244,7 +244,7 @@ namespace snapper
     bool
     VolumeGroup::contains_thin(const string& lv_name) const
     {
-		y2err("now it is in  snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "(" << lv_name << ")");
+		y2err("snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "(" << lv_name << ")");
 	boost::shared_lock<boost::shared_mutex> shared_lock(vg_mutex);
 
 	const_iterator cit = lv_info_map.find(lv_name);
@@ -256,7 +256,7 @@ namespace snapper
     void
     VolumeGroup::create_snapshot(const string& lv_origin_name, const string& lv_snapshot_name)
     {
-	y2err("now it is in  snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "(" << lv_origin_name << ", " << lv_snapshot_name << ")");
+	y2err("snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "(" << lv_origin_name << ", " << lv_snapshot_name << ")");
 	boost::upgrade_lock<boost::shared_mutex> upg_lock(vg_mutex);
 
 	if (lv_info_map.find(lv_snapshot_name) != lv_info_map.end())
@@ -285,13 +285,13 @@ namespace snapper
 	iterator it = lv_info_map.find(lv_name);
 	if (it != lv_info_map.end())
 	{
-	    y2err("now it is in  snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "(" << lv_name << ")" << " || find(lv_name)=true update()");
+	    y2err("snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "(" << lv_name << ")" << " || find(lv_name)=true update()");
 		// FIXME: upgrade lock is too strict here. Should be shared_lock only
 	    it->second->update();
 	}
 	else
 	{
-		y2err("now it is in  snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "(" << lv_name << ")" << " || find(lv_name)=false add");
+		y2err("snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "(" << lv_name << ")" << " || find(lv_name)=false add");
 	    SystemCmd cmd(LVSBIN " --noheadings -o lv_attr,segtype " + quote(vg_name + "/" + lv_name));
 	    if (cmd.retcode() != 0 || cmd.stdout().empty())
 	    {
@@ -316,7 +316,7 @@ namespace snapper
     void
     VolumeGroup::remove_lv(const string& lv_name)
     {
-		y2err("now it is in  snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "(" << lv_name << ")");
+		y2err("snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "(" << lv_name << ")");
 	boost::upgrade_lock<boost::shared_mutex> upg_lock(vg_mutex);
 
 	iterator cit = lv_info_map.find(lv_name);
@@ -366,7 +366,7 @@ namespace snapper
     void
     LvmCache::activate(const string& vg_name, const string& lv_name) const
     {
-		y2err("now it is in  snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "(" << vg_name << ", " << lv_name << ")");
+		y2err("snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "(" << vg_name << ", " << lv_name << ")");
 	const_iterator cit = vgroups.find(vg_name);
 
 	if (cit == vgroups.end())
@@ -382,7 +382,7 @@ namespace snapper
     void
     LvmCache::deactivate(const string& vg_name, const string& lv_name) const
     {
-		y2err("now it is in  snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "(" << vg_name << ", " << lv_name << ")");
+		y2err("snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "(" << vg_name << ", " << lv_name << ")");
 	const_iterator cit = vgroups.find(vg_name);
 
 	if (cit == vgroups.end())
@@ -398,7 +398,7 @@ namespace snapper
     bool
     LvmCache::contains(const string& vg_name, const string& lv_name) const
     {
-		y2err("now it is in  snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "(" << vg_name << ", " << lv_name << ")");
+		y2err("snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "(" << vg_name << ", " << lv_name << ")");
 	const_iterator cit = vgroups.find(vg_name);
 
 	return cit != vgroups.end() && cit->second->contains(lv_name);
@@ -408,7 +408,7 @@ namespace snapper
     bool
     LvmCache::contains_thin(const string& vg_name, const string& lv_name) const
     {
-		y2err("now it is in  snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ 
+		y2err("snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ 
 		<< "(" << vg_name << ", " << lv_name << ")");
 	const_iterator cit = vgroups.find(vg_name);
 
@@ -422,13 +422,13 @@ namespace snapper
 	const_iterator cit = vgroups.find(vg_name);
 	if (cit == vgroups.end())
 	{
-		y2err("now it is in  snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "(" << vg_name << ", " << lv_name << ")" << " || find(vg_name)=false => add_vg()");
+		y2err("snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "(" << vg_name << ", " << lv_name << ")" << " || find(vg_name)=false => add_vg()");
 	    add_vg(vg_name, lv_name);
 	    y2deb("lvm cache: added new vg: " << vg_name << ", including lv: " << lv_name);
 	}
 	else
 	{
-		y2err("now it is in  snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "(" << vg_name << ", " << lv_name << ")" << " || find(vg_name)=true => find(lv_name)");
+		y2err("snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "(" << vg_name << ", " << lv_name << ")" << " || find(vg_name)=true => find(lv_name)");
 	    cit->second->add_or_update(lv_name);
 	    y2deb("lvm cache: updated lv details for " << lv_name);
 	}
@@ -438,7 +438,7 @@ namespace snapper
     void
     LvmCache::create_snapshot(const string& vg_name, const string& lv_origin_name, const string& lv_snapshot_name)
     {
-	y2err("now it is in  snapper/" << __FILE__ << "|| func name:" << __FUNCTION__
+	y2err("snapper/" << __FILE__ << "|| func name:" << __FUNCTION__
 	<< "(" << vg_name << ", " << lv_origin_name << ", " << lv_snapshot_name << ") (开始)" );
 	const_iterator cit = vgroups.find(vg_name);
 	if (cit == vgroups.end())
@@ -450,7 +450,7 @@ namespace snapper
 	cit->second->create_snapshot(lv_origin_name, lv_snapshot_name);
 
 	y2deb("lvm cache: created new snapshot: " << lv_snapshot_name << " in vg: " << vg_name);
-		y2err("now it is in  snapper/" << __FILE__ << "|| func name:" << __FUNCTION__
+		y2err("snapper/" << __FILE__ << "|| func name:" << __FUNCTION__
 	<< "(" << vg_name << ", " << lv_origin_name << ", " << lv_snapshot_name << ") (结束)" );
     }
 
@@ -458,7 +458,7 @@ namespace snapper
     void
     LvmCache::add_vg(const string& vg_name, const string& include_lv_name)
     {
-	y2err("now it is in  snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "(" << vg_name << ", " << include_lv_name << ")");
+	y2err("snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "(" << vg_name << ", " << include_lv_name << ")");
 	SystemCmd cmd(LVSBIN " --noheadings -o lv_name,lv_attr,segtype " + quote(vg_name));
 	if (cmd.retcode() != 0)
 	{
@@ -489,7 +489,7 @@ namespace snapper
     void
     LvmCache::delete_snapshot(const string& vg_name, const string& lv_name) const
     {
-		y2err("now it is in  snapper/" << __FILE__ << "|| func name:" << __FUNCTION__  << "(" << vg_name << ", " << lv_name << ")");
+		y2err("snapper/" << __FILE__ << "|| func name:" << __FUNCTION__  << "(" << vg_name << ", " << lv_name << ")");
 	const_iterator cit = vgroups.find(vg_name);
 
 	if (cit == vgroups.end())

@@ -59,7 +59,6 @@ namespace snapper
 
     std::ostream& operator<<(std::ostream& s, const File& file)
     {
-		 y2err("now it is in  snapper/" << __FILE__ << "|| func name:" << __FUNCTION__);
 	s << "name:\"" << file.name << "\"";
 
 	s << " pre_to_post_status:\"" << statusToString(file.pre_to_post_status) << "\"";
@@ -77,14 +76,15 @@ namespace snapper
     void
     Files::filter(const vector<string>& ignore_patterns)
     {
-	y2err("now it is in  snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "()");
 	std::function<bool(const File&)> pred = [&ignore_patterns](const File& file) {
 	    for (const string& ignore_pattern : ignore_patterns)
 		if (fnmatch(ignore_pattern.c_str(), file.getName().c_str(), FNM_LEADING_DIR) == 0)
+		{
 		    return true;
+		}
+		y2err("snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "(" << ignore_patterns.begin()->c_str() << ", name:" <<file.getName().c_str());
 	    return false;
 	};
-
 	entries.erase(remove_if(entries.begin(), entries.end(), pred), entries.end());
     }
 
@@ -92,7 +92,7 @@ namespace snapper
     bool
     File::cmp_lt(const string& lhs, const string& rhs)
     {
-	y2err("now it is in  snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "(lhs=" << lhs << "," << "rhs=" << rhs << ")");
+	y2err("snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "(lhs=" << lhs << "," << "rhs=" << rhs << ")");
 	const std::collate<char>& c = std::use_facet<std::collate<char>>(std::locale());
 
 	return c.compare(lhs.c_str(), lhs.c_str() + lhs.length(),
@@ -170,7 +170,7 @@ namespace snapper
     unsigned int
     File::getPreToSystemStatus()
     {
-		y2err("now it is in  snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "()");
+		//y2err("snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "()");
 	if (pre_to_system_status == (unsigned int)(-1))
 	{
 	    SDir dir1(file_paths->pre_path);
@@ -192,7 +192,7 @@ namespace snapper
     unsigned int
     File::getPostToSystemStatus()
     {
-		y2err("now it is in  snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "()");
+		//y2err("snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "()");
 	if (post_to_system_status == (unsigned int)(-1))
 	{
 	    SDir dir1(file_paths->post_path);
@@ -218,15 +218,15 @@ namespace snapper
 	switch (cmp)
 	{
 	    case CMP_PRE_TO_POST:
-		y2err("now it is in  snapper/" << __FILE__ << "|| func name:" << __FUNCTION__  << "(CMP_PRE_TO_POST)");
+		//y2err("snapper/" << __FILE__ << "|| func name:" << __FUNCTION__  << "(CMP_PRE_TO_POST)");
 		return getPreToPostStatus();
 
 	    case CMP_PRE_TO_SYSTEM:
-		y2err("now it is in  snapper/" << __FILE__ << "|| func name:" << __FUNCTION__  << "(CMP_PRE_TO_SYSTEM)");
+		//y2err("snapper/" << __FILE__ << "|| func name:" << __FUNCTION__  << "(CMP_PRE_TO_SYSTEM)");
 		return getPreToSystemStatus();
 
 	    case CMP_POST_TO_SYSTEM:
-		y2err("now it is in  snapper/" << __FILE__ << "|| func name:" << __FUNCTION__  << "(CMP_POST_TO_SYSTEM)");
+		//y2err("snapper/" << __FILE__ << "|| func name:" << __FUNCTION__  << "(CMP_POST_TO_SYSTEM)");
 		return getPostToSystemStatus();
 	}
 
@@ -237,7 +237,7 @@ namespace snapper
     string
     File::getAbsolutePath(Location loc) const
     {
-		y2err("now it is in  snapper/" << __FILE__ << "|| func name:" << __FUNCTION__  << "(location=" << loc << ")");
+		y2err("snapper/" << __FILE__ << "|| func name:" << __FUNCTION__  << "(location=" << loc << ")");
 	string prefix;
 
 	switch (loc)
@@ -262,7 +262,7 @@ namespace snapper
     bool
     File::createParentDirectories(const string& path) const
     {
-	y2err("now it is in  snapper/" << __FILE__ << "|| func name:" << __FUNCTION__  << "(path:" << path << ")");
+	//y2err("snapper/" << __FILE__ << "|| func name:" << __FUNCTION__  << "(path:" << path << ")");
 	string::size_type pos = path.rfind('/');
 	if (pos == string::npos)
 	    return true;
@@ -298,7 +298,7 @@ namespace snapper
     bool
     File::createAllTypes() const
     {
-	y2err("now it is in  snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "()" );
+	y2err("snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "(判断st_mode，调用不同的创建函数)" );
 	struct stat fs;
 	if (lstat(getAbsolutePath(LOC_PRE).c_str(), &fs) != 0)
 	{
@@ -338,7 +338,7 @@ namespace snapper
     bool
     File::createDirectory(mode_t mode, uid_t owner, gid_t group) const
     {
-	y2err("now it is in  snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "(mode,ower,group)" );
+	y2err("snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "(创建目录)" );
 	if (mkdir(getAbsolutePath(LOC_SYSTEM).c_str(), 0) != 0)
 	{
 	    if (errno == EEXIST && !checkDir(getAbsolutePath(LOC_SYSTEM)))
@@ -370,7 +370,7 @@ namespace snapper
     bool
     File::createFile(mode_t mode, uid_t owner, gid_t group) const
     {
-	y2err("now it is in  snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "(mode=" << mode << ", owner="<< owner << ", group= "<< group << ")");
+	y2err("snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "(创建文件)");
 	int src_fd = open(getAbsolutePath(LOC_PRE).c_str(), O_RDONLY | O_LARGEFILE | O_CLOEXEC);
 	if (src_fd < 0)
 	{
@@ -421,7 +421,7 @@ namespace snapper
     bool
     File::createLink(uid_t owner, gid_t group) const
     {
-	y2err("now it is in  snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "(ower=" << owner << ", group=" << group << ")");
+	y2err("snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "(创建链接)");
 	string tmp;
 	readlink(getAbsolutePath(LOC_PRE), tmp);
 
@@ -446,7 +446,7 @@ namespace snapper
     bool
     File::deleteAllTypes() const
     {
-	y2err("now it is in  snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "()");
+	y2err("snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "(根据st_mode 调用不同的删除函数)");
 	struct stat fs;
 	if (lstat(getAbsolutePath(LOC_SYSTEM).c_str(), &fs) == 0)
 	{
@@ -489,7 +489,7 @@ namespace snapper
     bool
     File::modifyAllTypes() const
     {
-	y2err("now it is in  snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "()");
+	y2err("snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "(修改)");
 	struct stat fs;
 	if (lstat(getAbsolutePath(LOC_PRE).c_str(), &fs) != 0)
 	{
@@ -554,7 +554,7 @@ namespace snapper
     bool
     File::modifyXattributes()
     {
-		y2err("now it is in  snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "()");
+		y2err("snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "()");
         bool ret_val;
 
         try {
@@ -586,7 +586,7 @@ namespace snapper
     bool
     File::modifyAcls()
     {
-		y2err("now it is in  snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "()");
+		//y2err("snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "()");
 	bool ret_val;
 
 	try
@@ -646,7 +646,7 @@ namespace snapper
     bool
     File::doUndo()
     {
-	y2err("now it is in  snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "()");
+	y2err("snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "(进行撤销修改)");
 	bool error = false;
 
 	if (getPreToPostStatus() & CREATED || getPreToPostStatus() & TYPE)
@@ -696,7 +696,7 @@ namespace snapper
     Action
     File::getAction() const
     {
-		y2err("now it is in  snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ );
+		//y2err("snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ );
 	if (getPreToPostStatus() == CREATED)
 	    return DELETE;
 	if (getPreToPostStatus() == DELETED)
@@ -708,14 +708,12 @@ namespace snapper
     UndoStatistic
     Files::getUndoStatistic() const
     {
-		
 	UndoStatistic rs;
-
 	for (vector<File>::const_iterator it = entries.begin(); it != entries.end(); ++it)
 	{
 	    if (it->getUndo())
 	    {
-		y2err("now it is in  snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "(getUndo=" << it->getUndo() << ")");
+		y2err("调用getAction获取，前面存入cb的status的值");
 		switch (it->getAction())
 		{
 		    case CREATE: rs.numCreate++; break;
@@ -732,7 +730,7 @@ namespace snapper
     vector<UndoStep>
     Files::getUndoSteps() const
     {
-		y2err("now it is in  snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "()");
+		y2err("snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "()");
 	vector<UndoStep> undo_steps;
 
 	for (vector<File>::const_reverse_iterator it = entries.rbegin(); it != entries.rend(); ++it)

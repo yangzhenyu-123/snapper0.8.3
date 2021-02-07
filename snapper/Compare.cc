@@ -321,12 +321,13 @@ namespace snapper
     lonesome(const SDir& dir, const string& path, const string& name, const struct stat& stat,
 	     unsigned int status, cmpdirs_cb_t cb)
     {
-	y2err("snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "(dir=" << dir.fullname() << ", path:" << path << ", name:" << name << ", stat" << ", status:" << status <<", cb)");
+	y2err("snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "(dir=" << dir.fullname() <<", name:" << name);
+	y2err("将file与对应的status写入cb status = " << status);
 	cb(path + "/" + name, status);
 
 	if (S_ISDIR(stat.st_mode))
 	{
-		cout << "当前比较的是目录:" << endl;
+		cout << "如果是目录，调用listSubdirs:" << endl;
 		listSubdirs(SDir(dir, name), path + "/" + name, status, cb);
 	}
     }
@@ -336,24 +337,20 @@ namespace snapper
     twosome(const CmpData& cmp_data, const SDir& dir1, const SDir& dir2, const string& path,
 	    const string& name, const struct stat& stat1, const struct stat& stat2)
     {
-		 y2err("snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "(cmp_data , dir1:" << 
-		 dir1.fullname() << ", dir2:" << dir2.fullname() << ", " << path << ", " << name << ", stat1="
-		  << stat1.st_mode << ", stat2=" << stat2.st_mode << ")" );
+	y2err("snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "(dir1:" << dir1.fullname() << ", dir2:" << dir2.fullname() << ", " << name );
 	unsigned int status = 0;
 	if (stat1.st_dev == cmp_data.dev1 && stat2.st_dev == cmp_data.dev2)
 	{
 		cout << "======调用cmpFiles对文件进行比较======" << endl;
 	    status = cmpFiles(SFile(dir1, name), stat1, SFile(dir2, name), stat2);
-		cout << "这里的比较主要是文件的stat值的比较："<<endl;
+		cout << "这里的比较返回值有：创建 删除 还有文件stat比较"<<endl;
 		cout << "status=0x" << setbase(16) << status << "  1:不相同， 0:相同" << endl;
 	//	cout << "这里每一位代表一种属性，1 不相同， 0 相同" << endl;
 		
 	}
-
-
 	if (status != 0) //
 	{
-		cout << "确认status！=0,有不同之处" << endl;	
+		cout << "确认status！=0,有不同之处 然后将不同status和file_name写入cmp_data.cb" << endl;	
 	    cmp_data.cb(path + "/" + name, status);
 	}
 
@@ -363,7 +360,7 @@ namespace snapper
 	    if (S_ISDIR(stat1.st_mode))
 		if (stat1.st_dev == cmp_data.dev1 && stat2.st_dev == cmp_data.dev2)
 		{
-			cout << "TYPE不同，为目录，调用cmpDirsWorker" << endl;
+			cout << "cmpFiles返回的status的值，表明TYPE不同，如果为目录，调用cmpDirsWorker" << endl;
 			cmpDirsWorker(cmp_data, SDir(dir1, name), SDir(dir2, name), path + "/" + name);
 		}
 		    
@@ -421,7 +418,7 @@ namespace snapper
 
 	// cout << "\n";
 
-	y2err("打印排序后的dir1:");
+	y2err("打印排序后的dir1（快照卷）:");
 	int nnn=1;
 	for(first1=entries1.begin(); first1 != last1; first1++)
 	{
@@ -429,7 +426,7 @@ namespace snapper
 	   nnn++;
 	}
 	y2err("");
-	y2err("打印排序后的dir2:");
+	y2err("打印排序后的dir2（当前卷）:");
 	int mmm=1;
 	for(first2=entries2.begin(); first2 != last2; first2++)
 	{
@@ -469,7 +466,7 @@ namespace snapper
 
 		if (stat2.st_dev == cmp_data.dev2)
 		{
-			y2err("当dir1和dir2的磁盘设备号匹配相同后，调用lonesome函数 CREATED 也就是dir1没有 dir2中有");
+			y2err("stat2.st_dev == cmp_data.dev2: " << cmp_data.dev2 << " 当dir1和dir2的磁盘设备号匹配相同后，调用lonesome函数 CREATED 写入cb");
 			lonesome(dir2, path, *first2, stat2, CREATED, cmp_data.cb);
 		}
 		++first2;
@@ -483,7 +480,7 @@ namespace snapper
 
 		if (stat1.st_dev == cmp_data.dev1)
 		{
-			y2err("当匹配后，调用lonesome函数 DELETED 也就是dir1有 dir2中没有");
+			y2err("stat1.st_dev == cmp_data.dev1: " << cmp_data.dev1 << " 当匹配后，调用lonesome函数 DELETED 写入cb");
 			lonesome(dir1, path, *first1, stat1, DELETED, cmp_data.cb);
 		}
 
@@ -492,24 +489,29 @@ namespace snapper
 	    }
 	    else if (*first2 < *first1) //
 	    {
-		y2err( "*first1 > *first2：快照卷=  " <<first1->c_str()<< ", 当前卷=" <<first2->c_str() );
+		y2err( "*first1 > *first2：快照卷=" <<first1->c_str()<< ", 当前卷=" <<first2->c_str() << "  first2下移一位");
 		struct stat stat2;
 		dir2.stat(*first2, &stat2, AT_SYMLINK_NOFOLLOW); // TODO error check
 
 		if (stat2.st_dev == cmp_data.dev2)
-		    lonesome(dir2, path, *first2, stat2, CREATED, cmp_data.cb);
-
+		{
+			y2err("stat2.st_dev == cmp_data.dev2: " << cmp_data.dev2 << " 比较结果是当前卷新增的文件，调用lonesome函数 CREATED 写入cb");
+			lonesome(dir2, path, *first2, stat2, CREATED, cmp_data.cb);
+		}
 		++first2;
 			cout << "} " << endl;
 	    }
 	    else if (*first1 < *first2)
 	    {
-		y2err( "*first1 < *first2：快照卷= " <<first1->c_str()<< ", 当前卷=" << first2->c_str());
+		y2err( "*first1 < *first2：快照卷=" <<first1->c_str()<< ", 当前卷=" << first2->c_str() << "  first1下移一位");
 		struct stat stat1;
 		dir1.stat(*first1, &stat1, AT_SYMLINK_NOFOLLOW); // TODO error check
 
 		if (stat1.st_dev == cmp_data.dev1)
-		    lonesome(dir1, path, *first1, stat1, DELETED, cmp_data.cb);
+		{
+			y2err("stat1.st_dev == cmp_data.dev1: " << cmp_data.dev1 << " 比较结果是当前卷删除的文件，调用lonesome函数 DELETED 写入cb");
+			lonesome(dir1, path, *first1, stat1, DELETED, cmp_data.cb);
+		}
 
 		++first1;
 			cout << "} " << endl;
@@ -524,7 +526,8 @@ namespace snapper
 
 		struct stat stat2;
 		dir2.stat(*first2, &stat2, AT_SYMLINK_NOFOLLOW); // TODO error check
-		y2err( "*first1 == *first2：快照卷= " << first1->c_str() << ", 当前卷=" << first2->c_str());
+		y2err( "*first1 == *first2：快照卷=" << first1->c_str() << ", 当前卷=" << first2->c_str() << "  first1和first2同时下移一位");
+		
 		twosome(cmp_data, dir1, dir2, path, *first1, stat1, stat2);
 		++first1;
 		++first2;

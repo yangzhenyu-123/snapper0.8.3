@@ -109,9 +109,7 @@ struct MyFiles : public Files
 {
 
     MyFiles(const Files& files) : Files(files) {}
-
     void bulk_process(FILE* file, std::function<void(File& file)> callback);
-
 };
 
 
@@ -139,7 +137,7 @@ MyFiles::bulk_process(FILE* file, std::function<void(File& file)> callback)
 
 		name.erase(0, pos + 1);
 	    }
-		y2err("调用findAbsolutePath查找" << name);
+		y2err("调用findAbsolutePath在快照中查找" << name);
 	    Files::iterator it = findAbsolutePath(name);
 	    if (it == end())
 	    {
@@ -152,8 +150,10 @@ MyFiles::bulk_process(FILE* file, std::function<void(File& file)> callback)
     }
     else
     {
+
 	if (getopts.numArgs() == 0)
 	{
+		y2err("恢复快照中所有文件，调用回调函数设置undo标志");
 	    for (Files::iterator it = begin(); it != end(); ++it)
 		callback(*it);
 	}
@@ -162,14 +162,16 @@ MyFiles::bulk_process(FILE* file, std::function<void(File& file)> callback)
 	    while (getopts.numArgs() > 0)
 	    {
 		string name = getopts.popArg();
-
+		y2err("恢复快照中某个文件，调用findAbsolutePath在快照中查找" << name);
 		Files::iterator it = findAbsolutePath(name);
+
 		if (it == end())
 		{
+			y2err("查找" << name << "失败");
 		    cerr << sformat(_("File '%s' not found."), name.c_str()) << endl;
 		    exit(EXIT_FAILURE);
 		}
-
+		y2err("查找" << name << "成功");
 		callback(*it);
 	    }
 	}
@@ -179,7 +181,7 @@ MyFiles::bulk_process(FILE* file, std::function<void(File& file)> callback)
 //fch add********************************
 void manual_create_link(const string&link_file_name,const char *orig_file,uid_t owner,gid_t group)
 {
-	y2err("now it is in client/" <<  __FILE__ << " | func name::" << __FUNCTION__ 
+	y2err("client/" <<  __FILE__ << " | func name::" << __FUNCTION__ 
 	<< "(link=" << link_file_name << ", org=" << orig_file << ")");
 	if(::symlink(link_file_name.c_str(),orig_file) != 0 )
 	{
@@ -195,7 +197,7 @@ void manual_create_link(const string&link_file_name,const char *orig_file,uid_t 
 
 void manual_create_dir(const char *snap_file,const char *orig_file,mode_t mode,uid_t owner,gid_t group)
 {
-	y2err("now it is in client/" <<  __FILE__ << " | func name::" << __FUNCTION__ 
+	y2err("client/" <<  __FILE__ << " | func name::" << __FUNCTION__ 
 	<< "(snap=" << snap_file << ", orig=" << orig_file << ")");
 	if (mkdir(orig_file,0) != 0 )
 	{
@@ -221,7 +223,7 @@ void manual_create_dir(const char *snap_file,const char *orig_file,mode_t mode,u
 
 void manual_create_file(const char *snap_file,const char *orig_file,mode_t mode,uid_t owner,gid_t group)
 {
-	y2err("now it is in client/" <<  __FILE__ << " | func name::" 
+	y2err("client/" <<  __FILE__ << " | func name::" 
 	<< __FUNCTION__ << "(" << snap_file << ", " << orig_file << ")");
 //	y2err("********in manual_create_file函数**********");
 //	y2err("**********:"<<snap_file);
@@ -290,7 +292,7 @@ void manual_create_file(const char *snap_file,const char *orig_file,mode_t mode,
 
 void manual_delete_file(const char *orig_file)
 {
-	y2err("now it is in client/" <<  __FILE__ << " | func name::" << __FUNCTION__ << "(" << orig_file << ")");
+	y2err("client/" <<  __FILE__ << " | func name::" << __FUNCTION__ << "(" << orig_file << ")");
 	struct stat s2;
 	if (lstat(orig_file,&s2) == 0 )
 	{
@@ -321,7 +323,7 @@ void manual_delete_file(const char *orig_file)
 
 void jundge_link_file(const string &link_file_snap_path,const string &link_file_orig_path)
 {
-	y2err("now it is in client/" <<  __FILE__ << " | func name::" << __FUNCTION__ 
+	y2err("client/" <<  __FILE__ << " | func name::" << __FUNCTION__ 
 	<< "(snap=" << link_file_snap_path << ", orig=" << link_file_orig_path << ")");
 	struct stat s1,s2;
 	if ( lstat(link_file_orig_path.c_str(),&s1) !=0 && lstat(link_file_snap_path.c_str(),&s2) ==0 )
@@ -365,7 +367,7 @@ help_list_configs()
 void
 command_list_configs(ProxySnappers* snappers, ProxySnapper*)
 {
-	y2err("now it is in client/" << __FILE__ << " | func name: " << __FUNCTION__);
+	y2err("client/" << __FILE__ << " | func name: " << __FUNCTION__);
     getopts.parse("list-configs", GetOpts::no_options);
     if (getopts.hasArgs())
     {
@@ -409,7 +411,7 @@ help_create_config()
 void
 command_create_config(ProxySnappers* snappers, ProxySnapper*)
 {
-	y2err("now it is in client/" <<  __FILE__ << " | func name::" << __FUNCTION__ << "(begin)");
+	y2err("client/" <<  __FILE__ << " | func name::" << __FUNCTION__ << "(begin)");
     const struct option options[] = {
 	{ "fstype",		required_argument,	0,	'f' },
 	{ "template",		required_argument,	0,	't' },
@@ -448,7 +450,7 @@ command_create_config(ProxySnappers* snappers, ProxySnapper*)
     }
 
     snappers->createConfig(config_name, subvolume, fstype, template_name);
-	y2err("now it is in client/" <<  __FILE__ << " | func name: " << __FUNCTION__ <<"(结束运行)");
+	y2err("client/" <<  __FILE__ << " | func name: " << __FUNCTION__ <<"(结束运行)");
 }
 
 
@@ -464,16 +466,16 @@ help_delete_config()
 void
 command_delete_config(ProxySnappers* snappers, ProxySnapper*)
 {
-	y2err("now it is in client/" <<  __FILE__ << " | func name: " << __FUNCTION__ << "(begin)");
+	y2err("client/" <<  __FILE__ << " | func name: " << __FUNCTION__ << "(begin)");
     getopts.parse("delete-config", GetOpts::no_options);
     if (getopts.hasArgs())
     {
 	cerr << _("Command 'delete-config' does not take arguments.") << endl;
 	exit(EXIT_FAILURE);
     }
-		y2err("now it is in client/" <<  __FILE__ << " || func name::" << __FUNCTION__ << "(snapper, " << config_name << ")");
+		y2err("client/" <<  __FILE__ << " || func name::" << __FUNCTION__ << "(snapper, " << config_name << ")");
     snappers->deleteConfig(config_name);
-	y2err("now it is in client/" <<  __FILE__ << " | func name: " << __FUNCTION__ <<"(结束运行)");
+	y2err("client/" <<  __FILE__ << " | func name: " << __FUNCTION__ <<"(结束运行)");
 }
 
 
@@ -489,7 +491,7 @@ help_get_config()
 void
 command_get_config(ProxySnappers* snappers, ProxySnapper* snapper)
 {
-	y2err("now it is in client/" <<  __FILE__ << " | func name::" << __FUNCTION__ << "(begin)");
+	y2err("client/" <<  __FILE__ << " | func name::" << __FUNCTION__ << "(begin)");
     getopts.parse("get-config", GetOpts::no_options);
     if (getopts.hasArgs())
     {
@@ -514,7 +516,7 @@ command_get_config(ProxySnappers* snappers, ProxySnapper* snapper)
     }
 
     cout << table;
-	y2err("now it is in client/" <<  __FILE__ << " | func name: " << __FUNCTION__ <<"(结束运行)");
+	y2err("client/" <<  __FILE__ << " | func name: " << __FUNCTION__ <<"(结束运行)");
 }
 
 
@@ -530,7 +532,7 @@ help_set_config()
 void
 command_set_config(ProxySnappers* snappers, ProxySnapper* snapper)
 {
-	y2err("now it is in client/" <<  __FILE__ << " | func name::" << __FUNCTION__ << "(ProxySnappers* snappers, ProxySnapper* snapper)");
+	y2err("client/" <<  __FILE__ << " | func name::" << __FUNCTION__ << "(ProxySnappers* snappers, ProxySnapper* snapper)");
     getopts.parse("set-config", GetOpts::no_options);
     if (!getopts.hasArgs())
     {
@@ -567,7 +569,7 @@ list_from_one_config(ProxySnapper* snapper, ListMode list_mode, bool show_used_s
 void
 command_list(ProxySnappers* snappers, ProxySnapper*)
 {
-	y2err("now it is in client/" <<  __FILE__ << " | func name::" << __FUNCTION__ << "(begin)");
+	y2err("client/" <<  __FILE__ << " | func name::" << __FUNCTION__ << "(begin)");
     const struct option options[] = {
 	{ "type",		required_argument,	0,	't' },
 	{ "disable-used-space", no_argument,            0,      0 },
@@ -635,14 +637,14 @@ command_list(ProxySnappers* snappers, ProxySnapper*)
 
         list_from_one_config(snapper, list_mode, show_used_space);
     }
-	y2err("now it is in client/" <<  __FILE__ << " | func name: " << __FUNCTION__ <<"(结束运行)");
+	y2err("client/" <<  __FILE__ << " | func name: " << __FUNCTION__ <<"(结束运行)");
 }
 
 
 void
 list_from_one_config(ProxySnapper* snapper, ListMode list_mode, bool show_used_space)
 {
-	y2err("now it is in client/" <<  __FILE__ << " | func name::" << __FUNCTION__ << "(ProxySnapper* snapper,list_mode:" << list_mode << "," << show_used_space);
+	y2err("client/" <<  __FILE__ << " | func name::" << __FUNCTION__ << "(ProxySnapper* snapper,list_mode:" << list_mode << "," << show_used_space);
     const ProxySnapshots& snapshots = snapper->getSnapshots();
 
     ProxySnapshots::const_iterator default_snapshot = snapshots.end();
@@ -703,7 +705,7 @@ list_from_one_config(ProxySnapper* snapper, ListMode list_mode, bool show_used_s
     {
 	case LM_ALL:
 	{
-		y2err("now it is in client/" <<  __FILE__ << " | func name: " << __FUNCTION__ << "(list mode is LM_ALL)");
+		y2err("client/" <<  __FILE__ << " | func name: " << __FUNCTION__ << "(list mode is LM_ALL)");
 	    TableHeader header;
 	    header.add(_("#"), TableAlign::RIGHT);
 	    header.add(_("Type"));
@@ -737,8 +739,8 @@ list_from_one_config(ProxySnapper* snapper, ListMode list_mode, bool show_used_s
 
 	case LM_SINGLE:
 	{
-		//y2err("now it is in client/client/snapper.cc/" << __FUNCTION__ << ":list mode is LM_SINGLE");
-		y2err("now it is in client/" <<  __FILE__ << " | func name: " << __FUNCTION__ << "(list mode is LM_single)");
+		//y2err("client/client/snapper.cc/" << __FUNCTION__ << ":list mode is LM_SINGLE");
+		y2err("client/" <<  __FILE__ << " | func name: " << __FUNCTION__ << "(list mode is LM_single)");
 	    TableHeader header;
 	    header.add(_("#"), TableAlign::RIGHT);
 	    header.add(_("Date"));
@@ -769,8 +771,8 @@ list_from_one_config(ProxySnapper* snapper, ListMode list_mode, bool show_used_s
 
 	case LM_PRE_POST:
 	{
-		//y2err("now it is in client/client/snapper.cc/" << __FUNCTION__ << ":list mode is LM_PRE_POST");
-		y2err("now it is in client/" <<  __FILE__ << " | func name: " << __FUNCTION__ << "(list mode is LM_pre_post)");
+		//y2err("client/client/snapper.cc/" << __FUNCTION__ << ":list mode is LM_PRE_POST");
+		y2err("client/" <<  __FILE__ << " | func name: " << __FUNCTION__ << "(list mode is LM_pre_post)");
 	    TableHeader header;
 	    header.add(_("Pre #"), TableAlign::RIGHT);
 	    header.add(_("Post #"), TableAlign::RIGHT);
@@ -830,7 +832,7 @@ help_create()
 void
 command_create(ProxySnappers* snappers, ProxySnapper* snapper)
 {
-	y2err("now it is in client/" <<  __FILE__ << " | func name: " << __FUNCTION__ << "(开始运行)");
+	y2err("client/" <<  __FILE__ << " | func name: " << __FUNCTION__ << "(开始运行)");
     const struct option options[] = {
 	{ "type",		required_argument,	0,	't' },
 	{ "pre-number",		required_argument,	0,	0 },
@@ -918,21 +920,21 @@ command_create(ProxySnappers* snappers, ProxySnapper* snapper)
 	    snapshot1 = snapper->createSingleSnapshot(scd);
 	    if (print_number)
 		cout << snapshot1->getNum() << endl;
-		y2err("now it is in client/" <<  __FILE__ << " | func name: " << __FUNCTION__ << "(结束运行)");
+		y2err("client/" <<  __FILE__ << " | func name: " << __FUNCTION__ << "(结束运行)");
 	} break;
 
 	case CT_PRE: {
 	    snapshot1 = snapper->createPreSnapshot(scd);
 	    if (print_number)
 		cout << snapshot1->getNum() << endl;
-		y2err("now it is in client/" <<  __FILE__ << " | func name: " << __FUNCTION__ <<"(结束运行)");
+		y2err("client/" <<  __FILE__ << " | func name: " << __FUNCTION__ <<"(结束运行)");
 	} break;
 
 	case CT_POST: {
 	    snapshot2 = snapper->createPostSnapshot(snapshot1, scd);
 	    if (print_number)
 		cout << snapshot2->getNum() << endl;
-		y2err("now it is in client/" <<  __FILE__ << " | func name: " << __FUNCTION__ <<"(结束运行)");
+		y2err("client/" <<  __FILE__ << " | func name: " << __FUNCTION__ <<"(结束运行)");
 	} break;
 
 	case CT_PRE_POST: {
@@ -941,7 +943,7 @@ command_create(ProxySnappers* snappers, ProxySnapper* snapper)
 	    snapshot2 = snapper->createPostSnapshot(snapshot1, scd);
 	    if (print_number)
 		cout << snapshot1->getNum() << ".." << snapshot2->getNum() << endl;
-		y2err("now it is in client/" <<  __FILE__ << " | func name: " << __FUNCTION__ <<"(结束运行)");
+		y2err("client/" <<  __FILE__ << " | func name: " << __FUNCTION__ <<"(结束运行)");
 	} break;
     }
 }
@@ -964,7 +966,7 @@ help_modify()
 void
 command_modify(ProxySnappers* snappers, ProxySnapper* snapper)
 {
-		y2err("now it is in client/" <<  __FILE__ << " | func name:" << __FUNCTION__ 
+		y2err("client/" <<  __FILE__ << " | func name:" << __FUNCTION__ 
 	<< "(开始运行)");
     const struct option options[] = {
 	{ "description",	required_argument,	0,	'd' },
@@ -1044,14 +1046,14 @@ filter_undeletables(ProxySnapshots& snapshots, vector<ProxySnapshots::iterator>&
 
     ProxySnapshots::const_iterator default_snapshot = snapshots.getDefault();
     filter(default_snapshot, _("Cannot delete snapshot %d since it is the next to be mounted snapshot."));
-	y2err("now it is in client/" <<  __FILE__ << " | func name: " << __FUNCTION__ << "(num=" << snapshots.getCurrent()->getNum() <<")");
+	y2err("client/" <<  __FILE__ << " | func name: " << __FUNCTION__ << "(num=" << snapshots.getCurrent()->getNum() <<")");
 }
 
 
 void
 command_delete(ProxySnappers* snappers, ProxySnapper* snapper)
 {
-	y2err("now it is in client/" <<  __FILE__ << " | func name: " << __FUNCTION__ << "(snappers, config_name=" << snapper->configName() << ")");
+	y2err("client/" <<  __FILE__ << " | func name: " << __FUNCTION__ << "(snappers, config_name=" << snapper->configName() << ")");
     const struct option options[] = {
 	{ "sync",		no_argument,		0,	's' },
 	{ 0, 0, 0, 0 }
@@ -1103,7 +1105,7 @@ command_delete(ProxySnappers* snappers, ProxySnapper* snapper)
 		}
 	    }
 	}
-	y2err("now it is in client/" <<  __FILE__ << " | func name: " << __FUNCTION__ <<"(结束运行)");
+	y2err("client/" <<  __FILE__ << " | func name: " << __FUNCTION__ <<"(结束运行)");
     }
 
     filter_undeletables(snapshots, nums);
@@ -1127,7 +1129,7 @@ help_mount()
 void
 command_mount(ProxySnappers* snappers, ProxySnapper* snapper)
 {
-	y2err("now it is in client/" <<  __FILE__ << " | func name: " << __FUNCTION__ << "(ProxySnappers* snappers, ProxySnapper* snapper)" );
+	y2err("client/" <<  __FILE__ << " | func name: " << __FUNCTION__ << "(ProxySnappers* snappers, ProxySnapper* snapper)" );
     getopts.parse("mount", GetOpts::no_options);
     if (!getopts.hasArgs())
     {
@@ -1157,7 +1159,7 @@ help_umount()
 void
 command_umount(ProxySnappers* snappers, ProxySnapper* snapper)
 {
-	y2err("now it is in client/" <<  __FILE__ << " | func name: " << __FUNCTION__ << "(ProxySnappers* snappers, ProxySnapper* snapper)" );
+	y2err("client/" <<  __FILE__ << " | func name: " << __FUNCTION__ << "(ProxySnappers* snappers, ProxySnapper* snapper)" );
     getopts.parse("umount", GetOpts::no_options);
     if (!getopts.hasArgs())
     {
@@ -1190,7 +1192,7 @@ help_status()
 void
 command_status(ProxySnappers* snappers, ProxySnapper* snapper)
 {
-	y2err("now it is in client/" <<  __FILE__ << " | func name:" << __FUNCTION__ 
+	y2err("client/" <<  __FILE__ << " | func name:" << __FUNCTION__ 
 	<< "(开始运行)");
     const struct option options[] = {
 	{ "output",		required_argument,	0,	'o' },
@@ -1240,7 +1242,7 @@ command_status(ProxySnappers* snappers, ProxySnapper* snapper)
 
     if (file != stdout)
 	fclose(file);
-		y2err("now it is in client/" <<  __FILE__ << " | func name:" << __FUNCTION__ 
+		y2err("client/" <<  __FILE__ << " | func name:" << __FUNCTION__ 
 	<< "(结束运行)");
 }
 
@@ -1263,7 +1265,7 @@ void
 command_diff(ProxySnappers* snappers, ProxySnapper* snapper)
 {
 	y2err("											");
-	y2err("now it is in client/" <<  __FILE__ << " | func name:" << __FUNCTION__ 
+	y2err("client/" <<  __FILE__ << " | func name:" << __FUNCTION__ 
 	<< "(开始运行)");
     const struct option options[] = {
 	{ "input",		required_argument,	0,	'i' },
@@ -1315,7 +1317,7 @@ command_diff(ProxySnappers* snappers, ProxySnapper* snapper)
 	differ.run(file.getAbsolutePath(LOC_PRE), file.getAbsolutePath(LOC_POST));
     });
 	y2err("结束运行bulk_process");
-	y2err("now it is in client/" <<  __FILE__ << " | func name:" << __FUNCTION__ 
+	y2err("client/" <<  __FILE__ << " | func name:" << __FUNCTION__ 
 	<< "(结束运行)");
 	y2err(" ");
 
@@ -1337,8 +1339,8 @@ help_undo()
 void
 command_undo(ProxySnappers* snappers, ProxySnapper* snapper)
 {
-		y2err("now it is in client/" <<  __FILE__ << " | func name:" << __FUNCTION__ 
-	<< "(开始运行)" << "打印getopts.numArgs()=" << getopts.numArgs());
+	y2err("											");
+	y2err("client/" <<  __FILE__ << " | func name:" << __FUNCTION__ << "(开始运行)" << "打印getopts.numArgs()=" << getopts.numArgs());
     const struct option options[] = {
 	{ "input",		required_argument,	0,	'i' },
 	{ 0, 0, 0, 0 }
@@ -1359,12 +1361,12 @@ command_undo(ProxySnappers* snappers, ProxySnapper* snapper)
     pair<ProxySnapshots::const_iterator, ProxySnapshots::const_iterator> range =
 	snapshots.findNums(num_all);
 	int num_flags=getopts.numArgs();
-	y2err("num_flage=" << num_flags);
+
     FILE* file = NULL;
 
     if(num_flags > 1) //表示恢复一个文件 第二个参数为1
     {
-		y2err("now it is in client/" <<  __FILE__ << " | func name:" << __FUNCTION__ 
+		y2err("client/" <<  __FILE__ << " | func name:" << __FUNCTION__ 
 	<< "(linx_snap修改过的快照恢复实现开始运行)");
 	    string delim = "..";
 	    string::size_type pos = num_all.find(delim);
@@ -1374,13 +1376,14 @@ command_undo(ProxySnappers* snappers, ProxySnapper* snapper)
 	    string mount_command="snapper --no-dbus -c " + config_name_bak + " mount " + num_snap;//挂载快照卷后，直接进行查找复制
 	    string umount_command="snapper --no-dbus -c " + config_name_bak + " umount " + num_snap;
 	    config_name_bak = "";
+		y2err("运行命令挂载快照：");
 	    int ret_mount=system(mount_command.c_str()); //c_str()相当于字符串的临时指针
 	    if (ret_mount != 0 )
 	    {
 		    y2err("mounting a snapshot with snapshot number '"<<num_snap<<"' failed!");
 		    exit(EXIT_FAILURE);
 	    }
-
+		cout << "成功挂载快照" << endl;
 	    string single_file_path = getopts.popArg();
 	    string single_file_name = single_file_path;
 	    string flag = getopts.popArg(); //获取下一个参数
@@ -1443,8 +1446,8 @@ command_undo(ProxySnappers* snappers, ProxySnapper* snapper)
 	    struct stat s1,s2;
 	    const char *orig_file = single_file_path.data();//data同c_str产生指向该数组的指针
 	    const char *snap_file = snap_file_path.data();
-	    y2err("aaaa:"<<orig_file);
-	    y2err("aaaa:"<<snap_file);
+	    //y2err("aaaa:"<<orig_file);
+	   // y2err("aaaa:"<<snap_file);
 
 	    if ( lstat(orig_file,&s1) !=0 && lstat(snap_file,&s2) ==0 )
 	    {
@@ -1534,12 +1537,12 @@ command_undo(ProxySnappers* snappers, ProxySnapper* snapper)
 		    y2err("umounting a snapshot with snapshot number '"<<num_snap<<"' failed!");
 		    exit(EXIT_FAILURE);
 	    }
+				y2err("client/" <<  __FILE__ << " | func name:" << __FUNCTION__ 
+	<< "(linx_snap修改过的快照恢复实现方式运行完成)");
+
     }
 
 	//fch add*************************************************
-
-		y2err("now it is in client/" <<  __FILE__ << " | func name:" << __FUNCTION__ 
-	<< "(linx_snap修改过的快照恢复实现方式运行完成)");
 
     GetOpts::parsed_opts::const_iterator opt;
 
@@ -1562,28 +1565,30 @@ command_undo(ProxySnappers* snappers, ProxySnapper* snapper)
     ProxyComparison comparison = snapper->createComparison(*range.first, *range.second, true);
 
     MyFiles files(comparison.getFiles());
-	y2err("(运行bulk_process)");
+	y2err("运行bulk_process");
     files.bulk_process(file, [](File& file) {
 	file.setUndo(true);
     });
-	y2err("(运行bulk_process结束)");
+	y2err("运行bulk_process结束");
 
+	cout << "调用getUndoStatistic获取撤销修改需要的动作数量" << endl;
     UndoStatistic undo_statistic = files.getUndoStatistic();
 
     if (undo_statistic.empty())
     {
-	cout << _("nothing to do") << endl;
+	cout << _("没有需要撤销的修改") << endl;
 	return;
     }
 
     cout << sformat(_("create:%d modify:%d delete:%d"), undo_statistic.numCreate,
 		    undo_statistic.numModify, undo_statistic.numDelete) << endl;
 
+	cout << "调用getUndoSteps获取file_name和对应的status，并保存在undo_steps中" << endl;
     vector<UndoStep> undo_steps = files.getUndoSteps();
 
     for (vector<UndoStep>::const_iterator it1 = undo_steps.begin(); it1 != undo_steps.end(); ++it1)
     {
-		y2err("(进入for循环比较)");
+	y2err("进入for循环，执行undo_steps");
 	vector<File>::iterator it2 = files.find(it1->name);
 	if (it2 == files.end())
 	{
@@ -1630,7 +1635,7 @@ command_undo(ProxySnappers* snappers, ProxySnapper* snapper)
 	}
 	y2err("结束doUndo");
     }
-		y2err("now it is in client/" <<  __FILE__ << " | func name:" << __FUNCTION__ 
+		y2err("client/" <<  __FILE__ << " | func name:" << __FUNCTION__ 
 	<< "(结束运行)");
 }
 
@@ -1640,7 +1645,7 @@ command_undo(ProxySnappers* snappers, ProxySnapper* snapper)
 const Filesystem*
 getFilesystem(const ProxyConfig& config)
 {
-	y2err("now it is in client/" <<  __FILE__ << " | func name: " << __FUNCTION__ << "(ProxyConfig& config)");
+	y2err("client/" <<  __FILE__ << " | func name: " << __FUNCTION__ << "(ProxyConfig& config)");
     const map<string, string>& raw = config.getAllValues();
 
     map<string, string>::const_iterator pos1 = raw.find(KEY_FSTYPE);
@@ -1682,7 +1687,7 @@ help_rollback()
 void
 command_rollback(ProxySnappers* snappers, ProxySnapper* snapper)
 {
-		y2err("now it is in client/" <<  __FILE__ << " | func name:" << __FUNCTION__ 
+		y2err("client/" <<  __FILE__ << " | func name:" << __FUNCTION__ 
 	<< "(开始运行)");
     const struct option options[] = {
 	{ "print-number",       no_argument,            0,      'p' },
@@ -1830,7 +1835,7 @@ help_setup_quota()
 void
 command_setup_quota(ProxySnappers* snappers, ProxySnapper* snapper)
 {
-		y2err("now it is in client/" <<  __FILE__ << " | func name:" << __FUNCTION__ 
+		y2err("client/" <<  __FILE__ << " | func name:" << __FUNCTION__ 
 	<< "(开始运行)");
     GetOpts::parsed_opts opts = getopts.parse("setup-quota", GetOpts::no_options);
     if (getopts.numArgs() != 0)
@@ -1855,7 +1860,7 @@ help_cleanup()
 void
 command_cleanup(ProxySnappers* snappers, ProxySnapper* snapper)
 {
-		y2err("now it is in client/" <<  __FILE__ << " | func name:" << __FUNCTION__ 
+		y2err("client/" <<  __FILE__ << " | func name:" << __FUNCTION__ 
 	<< "(开始运行)");
     GetOpts::parsed_opts opts = getopts.parse("cleanup", GetOpts::no_options);
     if (getopts.numArgs() != 1)
@@ -1895,7 +1900,7 @@ help_debug()
 void
 command_debug(ProxySnappers* snappers, ProxySnapper*)
 {
-	y2err("now it is in client/" <<  __FILE__ << " | func name: " << __FUNCTION__ << "(ProxySnappers* snappers, ProxySnapper*)");
+	y2err("client/" <<  __FILE__ << " | func name: " << __FUNCTION__ << "(ProxySnappers* snappers, ProxySnapper*)");
     getopts.parse("debug", GetOpts::no_options);
     if (getopts.hasArgs())
     {
@@ -1941,7 +1946,7 @@ void
 command_xa_diff(ProxySnappers* snappers, ProxySnapper* snapper)
 {
 
-		y2err("now it is in client/" <<  __FILE__ << " | func name:" << __FUNCTION__ 
+		y2err("client/" <<  __FILE__ << " | func name:" << __FUNCTION__ 
 	<< "(开始运行)");
     GetOpts::parsed_opts opts = getopts.parse("xadiff", GetOpts::no_options);
     if (getopts.numArgs() < 1)

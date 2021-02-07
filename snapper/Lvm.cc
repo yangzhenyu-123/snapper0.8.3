@@ -52,12 +52,12 @@ namespace snapper
     Filesystem*
     Lvm::create(const string& fstype, const string& subvolume, const string& root_prefix)
     {
-	y2err("now it is in  snapper/" << __FILE__ << "|| now func is:" << __FUNCTION__ 
+	y2err("snapper/" << __FILE__ << "|| now func is:" << __FUNCTION__ 
 	<< "(" << fstype << ", " << subvolume << ", " << root_prefix << ") （开始）" );
 	Regex rx("^lvm\\(([_a-z0-9]+)\\)$");
 	if (rx.match(fstype))
 	{
-	y2err("now it is in  snapper/" << __FILE__ << "|| now func is:" << __FUNCTION__ 
+	y2err("snapper/" << __FILE__ << "|| now func is:" << __FUNCTION__ 
 	<< "(" << fstype << ", " << subvolume << ", " << root_prefix << ") （结束 返回Lvm ）" );
 		return new Lvm(subvolume, root_prefix, rx.cap(1));
 	}
@@ -70,7 +70,7 @@ namespace snapper
 	  caps(LvmCapabilities::get_lvm_capabilities()),
 	  cache(LvmCache::get_lvm_cache()), sh(NULL)
     {
-		y2err("now it is in  snapper/" << __FILE__ << "|| now func is:" << __FUNCTION__ 
+		y2err("snapper/" << __FILE__ << "|| now func is:" << __FUNCTION__ 
 		<< "(" << subvolume << ", " << root_prefix << ", " << mount_type << ") （开始)" );
 	if (access(LVCREATEBIN, X_OK) != 0)
 	{
@@ -119,7 +119,7 @@ namespace snapper
 	    SN_RETHROW(e);
 	}
 #endif
-			y2err("now it is in  snapper/" << __FILE__ << "|| now func is:" << __FUNCTION__ 
+			y2err("snapper/" << __FILE__ << "|| now func is:" << __FUNCTION__ 
 		<< "(" << subvolume << ", " << root_prefix << ", " << mount_type << ") （结束)" );
     }
 
@@ -133,7 +133,7 @@ namespace snapper
 	    y2err("mkdir failed errno:" << errno << " (" << strerror(errno) << ")");
 	    SN_THROW(CreateConfigFailedException("mkdir failed"));
 	}
-	 y2err("now it is in  snapper/" << __FILE__ << "|| now func is:" << __FUNCTION__ << "(subvolume_dir=" << subvolume_dir.fullname() << ", mode=," << mode << ");");
+	 y2err("snapper/" << __FILE__ << "|| now func is:" << __FUNCTION__ << "(subvolume_dir=" << subvolume_dir.fullname() << ", mode=," << mode << ");");
     }
 
 
@@ -190,10 +190,10 @@ namespace snapper
 	    }
 	}
 #endif
-	y2err("now it is in  snapper/" << __FILE__ << "|| now func is:" << __FUNCTION__ << "(dir=" 
+	y2err("snapper/" << __FILE__ << "|| now func is:" << __FUNCTION__ << "(dir=" 
 	<< subvolume_dir.fullname() << ", mode=" << mode << ") （开始)");	
 	createLvmConfig(subvolume_dir, mode);
-		y2err("now it is in  snapper/" << __FILE__ << "|| now func is:" << __FUNCTION__ << "(dir=" 
+		y2err("snapper/" << __FILE__ << "|| now func is:" << __FUNCTION__ << "(dir=" 
 	<< subvolume_dir.fullname() << ", mode=" << mode << ") （结束)");	
     }
 
@@ -201,7 +201,7 @@ namespace snapper
     void
     Lvm::deleteConfig() const
     {
-		y2err("now it is in  snapper/" << __FILE__ << "|| now func is:" << __FUNCTION__  << "()");
+		y2err("snapper/" << __FILE__ << "|| now func is:" << __FUNCTION__  << "()");
 	SDir subvolume_dir = openSubvolumeDir();
 
 	int r1 = subvolume_dir.unlink(".snapshots", AT_REMOVEDIR);
@@ -216,7 +216,7 @@ namespace snapper
     string
     Lvm::snapshotDir(unsigned int num) const
     {
-		y2err("now it is in  snapper/" << __FILE__ << "|| now func is:" << __FUNCTION__  << "(num=" << num << ")");
+		y2err("snapper/" << __FILE__ << "|| now func is:" << __FUNCTION__  << "(num=" << num << ")");
 	return (subvolume == "/" ? "" : subvolume) + "/.snapshots/" + decString(num) +
 	    "/snapshot";
     }
@@ -251,7 +251,7 @@ namespace snapper
 	    y2err(".snapshots must not be world-writable");
 	    throw IOErrorException(".snapshots must not be world-writable");
 	}
-	y2err("now it is in  snapper/" << __FILE__ << "|| now func is:" << __FUNCTION__  << "(dir=" << infos_dir.fullname() << ")" );
+	y2err("snapper/" << __FILE__ << "|| now func is:" << __FUNCTION__  << "(dir=" << infos_dir.fullname() << ")" );
 	return infos_dir;
     }
 
@@ -259,7 +259,7 @@ namespace snapper
     SDir
     Lvm::openSnapshotDir(unsigned int num) const
     {
-		y2err("now it is in  snapper/" << __FILE__ << "|| now func is:" << __FUNCTION__  << "(num=" << num << ")");
+		y2err("snapper/" << __FILE__ << "|| now func is:" << __FUNCTION__  << "(num=" << num << ")");
 	SDir info_dir = openInfoDir(num);
 	SDir snapshot_dir(info_dir, "snapshot");
 
@@ -270,7 +270,7 @@ namespace snapper
     string
     Lvm::snapshotLvName(unsigned int num) const
     {
-	y2err("now it is in  snapper/Lvm::" << __FILE__ << "|| now func is:" << __FUNCTION__ << "(num=" << num << ")");
+	y2err("snapper/Lvm::" << __FILE__ << "|| now func is:" << __FUNCTION__ << "(num=" << num << ")");
 	return lv_name + "-snapshot" + decString(num);
     }
 
@@ -279,7 +279,7 @@ namespace snapper
     Lvm::createSnapshot(unsigned int num, unsigned int num_parent, bool read_only, bool quota,
 			bool empty) const
     {
-		y2err("now it is in  snapper/" << __FILE__ << "|| now func is:" << __FUNCTION__ << "(num=" 
+		y2err("snapper/" << __FILE__ << "|| now func is:" << __FUNCTION__ << "(num=" 
 		 << num << ",num_parent=" << num_parent << ",read_only=" << read_only << ",quata=" << quota << ",empty=" << empty << ") （开始)");
 	if (num_parent != 0 || !read_only)
 	    throw std::logic_error("not implemented");
@@ -301,7 +301,7 @@ namespace snapper
 	    y2deb(cache);
 	    throw CreateSnapshotFailedException();
 	}
-	y2err("now it is in  snapper/" << __FILE__ << "|| now func is:" << __FUNCTION__ << "(num=" 
+	y2err("snapper/" << __FILE__ << "|| now func is:" << __FUNCTION__ << "(num=" 
 		 << num << ",num_parent=" << num_parent << ",read_only=" << read_only << ",quata=" << quota << ",empty=" << empty << ") （结束)");
     }
 
@@ -309,7 +309,7 @@ namespace snapper
     void
     Lvm::deleteSnapshot(unsigned int num) const
     {
-		y2err("now it is in  snapper/" << __FILE__ << "|| now func is:" << __FUNCTION__ << "(num=" << num << ") （begin)");
+		y2err("snapper/" << __FILE__ << "|| now func is:" << __FUNCTION__ << "(num=" << num << ") （begin)");
 	try
 	{
 	    cache->delete_snapshot(vg_name, snapshotLvName(num));
@@ -326,14 +326,14 @@ namespace snapper
 	SDir infos_dir = openInfosDir();
 	infos_dir.unlink(decString(num), AT_REMOVEDIR);
 
-	y2err("now it is in  snapper/" << __FILE__ << "|| now func is:" << __FUNCTION__ << "(num=" << num << ") (end)");
+	y2err("snapper/" << __FILE__ << "|| now func is:" << __FUNCTION__ << "(num=" << num << ") (end)");
     }
 
 
     bool
     Lvm::isSnapshotMounted(unsigned int num) const
     {
-	y2err("now it is in  snapper/" << __FILE__ << "|| now func is:" << __FUNCTION__ << "(num=" << num << ")");
+	y2err("snapper/" << __FILE__ << "|| now func is:" << __FUNCTION__ << "(num=" << num << ")");
 	bool mounted = false;
 	MtabData mtab_data;
 
@@ -346,7 +346,7 @@ namespace snapper
     void
     Lvm::mountSnapshot(unsigned int num) const
     {
-	y2err("now it is in  snapper/" << __FILE__ << "|| now func is:" << __FUNCTION__  << "(num=" << num << ") " << "挂载快照卷" << num);
+	y2err("snapper/" << __FILE__ << "|| now func is:" << __FUNCTION__  << "(num=" << num << ") " << "挂载快照卷" << num);
 	boost::unique_lock<boost::mutex> lock(mount_mutex);
 
 	if (isSnapshotMounted(num))
@@ -374,7 +374,7 @@ namespace snapper
     void
     Lvm::umountSnapshot(unsigned int num) const
     {
-	y2err("now it is in  snapper/" << __FILE__ << "|| now func is:" << __FUNCTION__  << "(snapshot_num=" << num << ")");
+	y2err("snapper/" << __FILE__ << "|| now func is:" << __FUNCTION__  << "(snapshot_num=" << num << ")");
 	boost::unique_lock<boost::mutex> lock(mount_mutex);
 
 	if (isSnapshotMounted(num))
@@ -409,7 +409,7 @@ namespace snapper
     bool
     Lvm::checkSnapshot(unsigned int num) const
     {
-	y2err("now it is in  snapper/" << __FILE__ << "|| now func is:" << __FUNCTION__  << "(num=" << num << ")" << " || return detectInactiveSnapshot()");
+	y2err("snapper/" << __FILE__ << "|| now func is:" << __FUNCTION__  << "(num=" << num << ")" << " || return detectInactiveSnapshot()");
 	return detectInactiveSnapshot(vg_name, snapshotLvName(num));
     }
 
@@ -417,7 +417,7 @@ namespace snapper
     bool
     Lvm::detectThinVolumeNames(const MtabData& mtab_data)
     {
-	y2err("now it is in  snapper/" << __FILE__ << "|| now func is:" << __FUNCTION__ 
+	y2err("snapper/" << __FILE__ << "|| now func is:" << __FUNCTION__ 
 	 << "(" << mtab_data.device << ", " << mtab_data.type << ", " << mtab_data.dir << ") (开始)");
 	Regex rx("^/dev/mapper/(.+[^-])-([^-].+)$");
 	if (!rx.match(mtab_data.device))
@@ -438,7 +438,7 @@ namespace snapper
 	    y2deb(cache);
 	    return false;
 	}
-	y2err("now it is in  snapper/" << __FILE__ << "|| now func is:" << __FUNCTION__ 
+	y2err("snapper/" << __FILE__ << "|| now func is:" << __FUNCTION__ 
 	 << "(" << mtab_data.device << ", " << mtab_data.type << ", " << mtab_data.dir << ") (结束 返回contains_thin)");
 	
 	return cache->contains_thin(vg_name, lv_name);
@@ -448,7 +448,7 @@ namespace snapper
     string
     Lvm::getDevice(unsigned int num) const
     {
-		y2err("now it is in  snapper/" << __FILE__ << "|| now func is:" << __FUNCTION__ << "(num=" << num << ")");
+		y2err("snapper/" << __FILE__ << "|| now func is:" << __FUNCTION__ << "(num=" << num << ")");
 	return "/dev/mapper/" + boost::replace_all_copy(vg_name, "-", "--") + "-" +
 	    boost::replace_all_copy(snapshotLvName(num), "-", "--");
     }
@@ -457,7 +457,7 @@ namespace snapper
     void
     Lvm::activateSnapshot(const string& vg_name, const string& lv_name) const
     {
-		y2err("now it is in  snapper/" << __FILE__ << "|| now func is:" << __FUNCTION__  << "(" << vg_name <<", "<< lv_name << ")");
+		y2err("snapper/" << __FILE__ << "|| now func is:" << __FUNCTION__  << "(" << vg_name <<", "<< lv_name << ")");
 	try
 	{
 	    cache->activate(vg_name, lv_name);
@@ -473,7 +473,7 @@ namespace snapper
     void
     Lvm::deactivateSnapshot(const string& vg_name, const string& lv_name) const
     {
-		y2err("now it is in  snapper/" << __FILE__ << "|| now func is:" << __FUNCTION__  << "(" << vg_name <<", "<< lv_name << ")");
+		y2err("snapper/" << __FILE__ << "|| now func is:" << __FUNCTION__  << "(" << vg_name <<", "<< lv_name << ")");
 	try
 	{
 	    cache->deactivate(vg_name, lv_name);
@@ -489,7 +489,7 @@ namespace snapper
     bool
     Lvm::detectInactiveSnapshot(const string& vg_name, const string& lv_name) const
     {
-		y2err("now it is in  snapper/" << __FILE__ << "|| now func is:" << __FUNCTION__  << "(" << vg_name <<", "<< lv_name << ")" << " || return contains(vg,lv)");
+		y2err("snapper/" << __FILE__ << "|| now func is:" << __FUNCTION__  << "(" << vg_name <<", "<< lv_name << ")" << " || return contains(vg,lv)");
 	return cache->contains(vg_name, lv_name);
     }
 

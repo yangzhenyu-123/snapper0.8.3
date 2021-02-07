@@ -50,7 +50,7 @@ namespace snapper
 	  files(&file_paths)
     {
 		 y2err("			");	
-		 y2err("now it is in  snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "(Comparison构造函数开始运行)");
+		 y2err("snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "(Comparison构造函数开始运行)");
 	if (snapshot1 == snapper->getSnapshots().end() ||
 	    snapshot2 == snapper->getSnapshots().end() ||
 	    snapshot1 == snapshot2)
@@ -61,16 +61,16 @@ namespace snapper
 	file_paths.system_path = snapper->subvolumeDir();
 	file_paths.pre_path = snapshot1->snapshotDir();
 	file_paths.post_path = snapshot2->snapshotDir();
-	 y2err("comparison调用initialize函数开始");
+	 y2err("============comparison调用initialize函数开始=======================");
 	initialize();
-	y2err("comparison调用initialize函数完成");
+	y2err("=================comparison调用initialize函数完成===================");
 	if (mount)
 	{
-		y2err("comparison调用do_mount函数开始");
+		y2err("================comparison调用do_mount函数开始===============");
 		do_mount();
-		y2err("comparison调用do_mount函数完成");
+		y2err("============comparison调用do_mount函数完成======================");
 	}
-	     y2err("(now it is in  snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "(Comparison构造函数结束运行)");
+	     y2err("==============Comparison构造函数结束运行================");
     }
 
 
@@ -88,7 +88,7 @@ namespace snapper
 	// But which snapshot is booted as current snapshot might not be constant.
 
 	bool fixed = !getSnapshot1()->isCurrent() && !getSnapshot2()->isCurrent();
-	 y2err("now it is in  snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "(fixed=" << fixed << ")");
+	 y2err("fixed=" << fixed << " true: snapshot1 && snapshot2 都是当前快照" );
 	if (fixed)
 	{
 	    try
@@ -104,36 +104,37 @@ namespace snapper
 
 	if (!fixed)
 	{
-	 y2err("now it is in  snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "(执行create函数开始)");
+	 y2err("Comparison->initialize执行create函数开始 函数目的是比较快照差别并保存到cb");
 	    create();
-	y2err("now it is in  snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "(执行create函数结束)");
+	y2err("Comparison->initialize执行create函数结束");
 	}
 	else
 	{
-		y2err("now it is in  snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "(执行load开始)");
+		y2err("Comparison->initialize执行load 读取filelist.txt");
 	    if (!load())
 	    {
-		y2err("now it is in  snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "(执行load()结束)");
-		 y2err("now it is in  snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "(执行create()开始)");
+		y2err("Comparison->initialize执行load() 读取filelist.txt失败");
+		 y2err("Comparison->initialize执行create() 进行比较比较快照差别并保存到cb)");
 		create();
-		y2err("now it is in  snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "(执行create()结束)");
-		y2err("now it is in  snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "(执行save()开始)");
+		y2err("Comparison->initialize执行create()结束)");
+		y2err("Comparison->initialize执行save() 开始保存比较结果到filelist.txt)");
 		save();
-		y2err("now it is in  snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "(执行save()结束");
+		y2err("Comparison->initialize执行save()结束");
 	    }
-		y2err("now it is in  snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "(执行load()结束");
+		else
+		y2err("Comparison->initialize执行load()成功");
 	}
-	y2err("now it is in  snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "(执行filter()");
+	y2err("Comparison->initialize执行filter()");
 	filter();
-	y2err("now it is in  snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "(执行filter()结束");
+	y2err("Comparison->initialize执行filter()结束");
     }
 
 
     void
     Comparison::do_mount() const
     {
-		 y2err("now it is in  snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "(snapshot1 iscurrent=" << getSnapshot1()->isCurrent() << ", snapshot2 iscurrent=" << getSnapshot2()->isCurrent() << ")");
-	
+		 y2err("snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "(snapshot1 iscurrent=" << getSnapshot1()->isCurrent() << ", snapshot2 iscurrent=" << getSnapshot2()->isCurrent() << ")");
+	y2err("调用mountFilesystemSnapshot()挂载快照卷开始");
 	if (!getSnapshot1()->isCurrent())
 	    getSnapshot1()->mountFilesystemSnapshot(false);
 	if (!getSnapshot2()->isCurrent())
@@ -146,7 +147,7 @@ namespace snapper
     void
     Comparison::do_umount() const
     {
-	y2err("now it is in  snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "(snapshot1=" << getSnapshot1()->isCurrent() << ", snapshot2=" << getSnapshot2()->isCurrent() << ")");
+	y2err("snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "(snapshot1=" << getSnapshot1()->isCurrent() << ", snapshot2=" << getSnapshot2()->isCurrent() << ")");
 	if (!getSnapshot1()->isCurrent())
 	    getSnapshot1()->umountFilesystemSnapshot(false);
 	if (!getSnapshot2()->isCurrent())
@@ -157,10 +158,12 @@ namespace snapper
     void
     Comparison::create()
     {
-	y2err("now it is in  snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "(num1:" 
+	y2err("snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "(num1:" 
 	<< getSnapshot1()->getNum() << ", num2:" << getSnapshot2()->getNum() << ")");
 	y2mil("num1:" << getSnapshot1()->getNum() << " num2:" << getSnapshot2()->getNum());
 
+	cout << "定义cb存储：文件及对应的status，调用File构造函数，将参数中status赋值给pre_to_post_status" << endl;
+	cout << "调用函数push_back将变化加入files" << endl;
 	cmpdirs_cb_t cb = [this](const string& name, unsigned int status) {
 	    files.push_back(File(&file_paths, name, status));
 	};
@@ -168,29 +171,37 @@ namespace snapper
 	do_mount();
 	y2err("create调用do_mount函数结束");
 	{
-		y2err("create调用openSnapshotDir函数 dir1");
+		y2err("create调用openSnapshotDir函数 dir1（快照卷）");
 	    SDir dir1 = getSnapshot1()->openSnapshotDir();
 		y2err("create调用openSnapshotDir函数结束 dir1");
-		y2err("create调用openSnapshotDir函数 dir2");
+		y2err("create调用openSnapshotDir函数 dir2（当前卷）");
 	    SDir dir2 = getSnapshot2()->openSnapshotDir();
 		y2err("create调用openSnapshotDir函数结束 dir2");
-		y2err("==================create调用cmpDirs函数====================");
+		y2err("==================create调用cmpDirs函数开始====================");
 	    snapper->getFilesystem()->cmpDirs(dir1, dir2, cb);
 		y2err("========================create调用cmpDirs函数结束================");
 	}
 	y2err("create调用do_umount函数");
 	do_umount();
 	y2err("create调用do_umount函数结束");
+	y2err("调用sort函数对files排序");
 	files.sort();
 
 	y2mil("found " << files.size() << " lines");
+	y2err("found files add " << files.size() << " lines");
+	y2err("打印files的内容如下：");
+	vector<File>::iterator i;
+	for(i=files.begin();i != files.end();i++)
+	{
+		cout << *i << endl;
+	}
     }
 
 
     bool
     Comparison::load()
     {
-	y2err("now it is in  snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "()");
+	y2err("snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "()");
 	y2mil("num1:" << getSnapshot1()->getNum() << " num2:" << getSnapshot2()->getNum());
 
 	if (getSnapshot1()->isCurrent() || getSnapshot2()->isCurrent())
@@ -208,11 +219,14 @@ namespace snapper
 	{
 	    SDir infos_dir = getSnapper()->openInfosDir();
 	    SDir info_dir = SDir(infos_dir, decString(num2));
-
+		y2err("打开filelist-" << num1 << ".txt");
 	    int fd = info_dir.open("filelist-" + decString(num1) + ".txt", O_RDONLY | O_NOATIME |
 				   O_NOFOLLOW | O_CLOEXEC);
 	    if (fd == -1)
-		return false;
+		{
+			y2err("打开filelist-" << num1 <<".txt" << "失败");
+			return false;
+		}
 
 	    AsciiFileReader asciifile(fd);
 
@@ -249,7 +263,7 @@ namespace snapper
     void
     Comparison::save()
     {
-	 y2err("now it is in  snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "()");
+	 y2err("snapper/" << __FILE__ << "|| func name:" << __FUNCTION__ << "()");
 	y2mil("num1:" << getSnapshot1()->getNum() << " num2:" << getSnapshot2()->getNum());
 
 	if (getSnapshot1()->isCurrent() || getSnapshot2()->isCurrent())
@@ -300,7 +314,7 @@ namespace snapper
     UndoStatistic
     Comparison::getUndoStatistic() const
     {
-		 y2err("now it is in  snapper/" << __FILE__ << "|| func name:" << __FUNCTION__);
+		 y2err("snapper/" << __FILE__ << "|| func name:" << __FUNCTION__);
 	if (getSnapshot1()->isCurrent())
 	    SN_THROW(IllegalSnapshotException());
 
@@ -311,7 +325,7 @@ namespace snapper
     XAUndoStatistic
     Comparison::getXAUndoStatistic() const
     {
-		 y2err("now it is in  snapper/" << __FILE__ << "|| func name:" << __FUNCTION__);
+		 y2err("snapper/" << __FILE__ << "|| func name:" << __FUNCTION__);
         if (getSnapshot1()->isCurrent())
             SN_THROW(IllegalSnapshotException());
 
@@ -322,7 +336,7 @@ namespace snapper
     vector<UndoStep>
     Comparison::getUndoSteps() const
     {
-		 y2err("now it is in  snapper/" << __FILE__ << "|| func name:" << __FUNCTION__);
+		 y2err("snapper/" << __FILE__ << "|| func name:" << __FUNCTION__);
 	if (getSnapshot1()->isCurrent())
 	    SN_THROW(IllegalSnapshotException());
 

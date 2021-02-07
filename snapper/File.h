@@ -109,7 +109,12 @@ namespace snapper
 	string post_path;
     };
 
-
+/*
+	CREATED = 1,		// created
+	DELETED = 2,		// deleted
+	TYPE = 4,		// type has changed
+	CONTENT = 8, 	
+	*/
     class File
     {
     public:
@@ -119,10 +124,18 @@ namespace snapper
 	      pre_to_system_status(-1), post_to_system_status(-1), undo(false),
 	      xaCreated(0), xaDeleted(0), xaReplaced(0)
 	{
-		y2err("File.h 现在在File构造函数 ");;
-		y2err("postpath:" << file_paths->post_path << ", name= "<< name <<  ", pre_to_post_status=" << pre_to_post_status);
+		y2err("File.h 现在在File构造函数");
+		if(pre_to_post_status == 1)
+		y2err("初始化一些参数 pre_to_post_status=" << pre_to_post_status << " CREATED file_paths:");
+		else if(pre_to_post_status == 2)
+		y2err("初始化一些参数 pre_to_post_status=" << pre_to_post_status << " DELETED file_paths:");
+		else if(pre_to_post_status == 4)
+		y2err("初始化一些参数 pre_to_post_status=" << pre_to_post_status << " TYPE file_paths:");
+		else
+		y2err("初始化一些参数 pre_to_post_status=" << pre_to_post_status << "CONTENT TYPE file_paths:");
+
+		y2err("postpath:" << file_paths->post_path << ", name= "<< name);
 		y2err("prepath:" << file_paths->pre_path );
-		y2err("systempath:" << file_paths->system_path);
 	}
 
 	const string& getName() const { return name; }
